@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="th" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThaiShop - Login / Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config={theme:{extend:{colors:{'thai-gold':'#F2B705','thai-orange':'#F28705','thai-red':'#BF0404','thai-purple':'#730202','thai-cream':'#FFF8E7','thai-saffron':'#FF9933'}}}}
+    </script>
+    <style>
+        *{box-sizing:border-box}
+        body{font-family:'Noto Sans Thai','Noto Sans SC',sans-serif;background:linear-gradient(135deg,#730202 0%,#BF0404 40%,#F28705 80%,#F2B705 100%);min-height:100vh}
+        .lang-zh,.lang-en,.lang-th{display:none!important}
+        body.lang-zh .lang-zh{display:inline-block!important}
+        body.lang-en .lang-en{display:inline-block!important}
+        body.lang-th .lang-th{display:inline-block!important}
+        body.lang-zh .lang-block-zh{display:block!important}
+        body.lang-en .lang-block-en{display:block!important}
+        body.lang-th .lang-block-th{display:block!important}
+        .gold-text{background:linear-gradient(180deg,#F2B705 0%,#FF9933 50%,#F2B705 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .lang-btn.active{background:#BF0404!important;color:white!important}
+        .form-input{transition:all .2s}
+        .form-input:focus{border-color:#F2B705;box-shadow:0 0 0 3px rgba(242,183,5,0.2)}
+        .tab-login{transition:all .2s}
+        .tab-login.active{background:#BF0404;color:white}
+    </style>
+</head>
+<body class="lang-th">
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-md">
+            <!-- Logo -->
+            <div class="text-center mb-6">
+                <a href="index-thai.html" class="text-4xl font-bold gold-text">ThaiShop</a>
+                <p class="text-white/70 text-sm mt-1">
+                    <span class="lang-th">แพลตฟอร์มช้อปปิ้งออนไลน์ชั้นนำของไทย</span><span class="lang-en">Thailand's leading online shopping platform</span><span class="lang-zh">泰国领先的在线购物平台</span>
+                </p>
+                <!-- Language switcher -->
+                <div class="flex justify-center gap-1 mt-3 text-xs">
+                    <button onclick="switchLang('th')" class="lang-btn px-2 py-1 rounded bg-white/20 text-white hover:bg-white/40 transition">ไทย</button>
+                    <button onclick="switchLang('en')" class="lang-btn px-2 py-1 rounded bg-white/20 text-white hover:bg-white/40 transition">EN</button>
+                    <button onclick="switchLang('zh')" class="lang-btn px-2 py-1 rounded bg-white/20 text-white hover:bg-white/40 transition">中文</button>
+                </div>
+            </div>
+
+            <!-- Card -->
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <!-- Tabs -->
+                <div class="flex">
+                    <button onclick="switchAuthTab('login')" id="tabLogin" class="tab-login active flex-1 py-3 font-bold text-sm">
+                        <span class="lang-th">เข้าสู่ระบบ</span><span class="lang-en">Login</span><span class="lang-zh">登录</span>
+                    </button>
+                    <button onclick="switchAuthTab('register')" id="tabRegister" class="tab-login flex-1 py-3 font-bold text-sm bg-gray-100 text-gray-600">
+                        <span class="lang-th">สมัครสมาชิก</span><span class="lang-en">Register</span><span class="lang-zh">注册</span>
+                    </button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="p-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                <span class="lang-th">อีเมล / เบอร์โทร</span><span class="lang-en">Email / Phone</span><span class="lang-zh">邮箱/手机号</span>
+                            </label>
+                            <input type="text" placeholder="example@email.com / 08x-xxx-xxxx" class="form-input w-full border-2 rounded-xl px-4 py-3 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                <span class="lang-th">รหัสผ่าน</span><span class="lang-en">Password</span><span class="lang-zh">密码</span>
+                            </label>
+                            <input type="password" placeholder="••••••••" class="form-input w-full border-2 rounded-xl px-4 py-3 outline-none text-sm">
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" class="accent-thai-red">
+                                <span class="lang-th">จดจำฉัน</span><span class="lang-en">Remember me</span><span class="lang-zh">记住我</span>
+                            </label>
+                            <a href="#" class="text-thai-red hover:underline">
+                                <span class="lang-th">ลืมรหัสผ่าน?</span><span class="lang-en">Forgot Password?</span><span class="lang-zh">忘记密码?</span>
+                            </a>
+                        </div>
+                        <button onclick="handleLogin()" class="w-full bg-thai-red text-white py-3 rounded-xl font-bold text-lg hover:bg-red-700 transition shadow-lg">
+                            <span class="lang-th">เข้าสู่ระบบ</span><span class="lang-en">Login</span><span class="lang-zh">登录</span>
+                        </button>
+                    </div>
+
+                    <!-- Social Login -->
+                    <div class="mt-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="flex-1 h-px bg-gray-200"></div>
+                            <span class="text-xs text-gray-400">
+                                <span class="lang-th">หรือเข้าสู่ระบบด้วย</span><span class="lang-en">Or login with</span><span class="lang-zh">或使用以下方式登录</span>
+                            </span>
+                            <div class="flex-1 h-px bg-gray-200"></div>
+                        </div>
+                        <div class="flex gap-3">
+                            <button class="flex-1 border-2 rounded-xl py-3 flex items-center justify-center gap-2 hover:border-thai-gold transition text-sm font-semibold">
+                                <span class="text-xl">🔵</span> Google
+                            </button>
+                            <button class="flex-1 border-2 rounded-xl py-3 flex items-center justify-center gap-2 hover:border-thai-gold transition text-sm font-semibold" style="color:#06C755">
+                                <span class="text-xl">💬</span> LINE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" class="p-6 hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                <span class="lang-th">ชื่อ-นามสกุล</span><span class="lang-en">Full Name</span><span class="lang-zh">姓名</span>
+                            </label>
+                            <input type="text" placeholder="สมชาย ใจดี" class="form-input w-full border-2 rounded-xl px-4 py-3 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                <span class="lang-th">อีเมล</span><span class="lang-en">Email</span><span class="lang-zh">邮箱</span>
+                            </label>
+                            <input type="email" placeholder="example@email.com" class="form-input w-full border-2 rounded-xl px-4 py-3 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                <span class="lang-th">เบอร์โทรศัพท์</span><span class="lang-en">Phone</span><span class="lang-zh">手机号</span>
+                            </label>
+                            <input type="tel" placeholder="08x-xxx-xxxx" class="form-input w-full border-2 rounded-xl px-4 py-3 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                <span class="lang-th">รหัสผ่าน</span><span class="lang-en">Password</span><span class="lang-zh">密码</span>
+                            </label>
+                            <input type="password" placeholder="••••••••" class="form-input w-full border-2 rounded-xl px-4 py-3 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">
+                                <span class="lang-th">ยืนยันรหัสผ่าน</span><span class="lang-en">Confirm Password</span><span class="lang-zh">确认密码</span>
+                            </label>
+                            <input type="password" placeholder="••••••••" class="form-input w-full border-2 rounded-xl px-4 py-3 outline-none text-sm">
+                        </div>
+                        <label class="flex items-start gap-2 cursor-pointer text-sm">
+                            <input type="checkbox" class="accent-thai-red mt-1">
+                            <span class="text-gray-600">
+                                <span class="lang-th">ฉันยอมรับ<a href="#" class="text-thai-red hover:underline">ข้อกำหนด</a>และ<a href="#" class="text-thai-red hover:underline">นโยบายความเป็นส่วนตัว</a></span>
+                                <span class="lang-en">I agree to the <a href="#" class="text-thai-red hover:underline">Terms</a> and <a href="#" class="text-thai-red hover:underline">Privacy Policy</a></span>
+                                <span class="lang-zh">我同意<a href="#" class="text-thai-red hover:underline">服务条款</a>和<a href="#" class="text-thai-red hover:underline">隐私政策</a></span>
+                            </span>
+                        </label>
+                        <button onclick="handleRegister()" class="w-full bg-thai-gold text-thai-purple py-3 rounded-xl font-bold text-lg hover:bg-thai-orange hover:text-white transition shadow-lg">
+                            <span class="lang-th">สมัครสมาชิก</span><span class="lang-en">Register</span><span class="lang-zh">注册</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
+        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
+        function switchAuthTab(tab){
+            document.getElementById('loginForm').classList.toggle('hidden',tab!=='login');
+            document.getElementById('registerForm').classList.toggle('hidden',tab!=='register');
+            document.getElementById('tabLogin').classList.toggle('active',tab==='login');
+            document.getElementById('tabLogin').classList.toggle('bg-gray-100',tab!=='login');
+            document.getElementById('tabLogin').classList.toggle('text-gray-600',tab!=='login');
+            document.getElementById('tabRegister').classList.toggle('active',tab==='register');
+            document.getElementById('tabRegister').classList.toggle('bg-gray-100',tab!=='register');
+            document.getElementById('tabRegister').classList.toggle('text-gray-600',tab!=='register');
+        }
+        function handleLogin(){alert('Login demo - redirecting to account page');location.href='account.html'}
+        function handleRegister(){alert('Register demo - redirecting to account page');location.href='account.html'}
+    </script>
+</body>
+</html>

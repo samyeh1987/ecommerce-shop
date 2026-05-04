@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="th" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThaiShop - My Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config={theme:{extend:{colors:{'thai-gold':'#F2B705','thai-orange':'#F28705','thai-red':'#BF0404','thai-purple':'#730202','thai-cream':'#FFF8E7','thai-saffron':'#FF9933'}}}}
+    </script>
+    <style>
+        *{box-sizing:border-box}
+        body{font-family:'Noto Sans Thai','Noto Sans SC',sans-serif;background:#FFF8E7}
+        .lang-zh,.lang-en,.lang-th{display:none!important}
+        body.lang-zh .lang-zh{display:inline-block!important}
+        body.lang-en .lang-en{display:inline-block!important}
+        body.lang-th .lang-th{display:inline-block!important}
+        body.lang-zh .lang-block-zh{display:block!important}
+        body.lang-en .lang-block-en{display:block!important}
+        body.lang-th .lang-block-th{display:block!important}
+        .gold-text{background:linear-gradient(180deg,#F2B705 0%,#FF9933 50%,#F2B705 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .lang-btn.active{background:#BF0404!important;color:white!important}
+        .sidebar-btn{transition:all .2s}
+        .sidebar-btn.active{background:#BF0404;color:white;border-radius:0.5rem}
+        .sidebar-btn:hover{background:rgba(191,4,4,0.1)}
+    </style>
+</head>
+<body class="lang-th">
+    <!-- Navbar -->
+    <nav class="bg-thai-purple text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="lg:hidden text-2xl">☰</button>
+                <a href="index-thai.html" class="text-2xl font-bold gold-text">ThaiShop</a>
+            </div>
+            <div class="hidden lg:flex items-center gap-6 text-sm">
+                <a href="index-thai.html" class="hover:text-thai-gold transition"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+                <a href="products.html" class="hover:text-thai-gold transition"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex gap-1 text-xs">
+                    <button onclick="switchLang('th')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">ไทย</button>
+                    <button onclick="switchLang('en')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">EN</button>
+                    <button onclick="switchLang('zh')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">中文</button>
+                </div>
+                <a href="cart.html" class="relative hover:text-thai-gold transition">🛒</a>
+                <a href="account.html" class="text-thai-gold">👤</a>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden lg:hidden px-4 pb-4 space-y-2 text-sm">
+            <a href="index-thai.html" class="block py-2 border-b border-white/20"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+            <a href="products.html" class="block py-2"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <h1 class="text-2xl font-bold text-thai-purple mb-6">
+            <span class="lang-th">👤 บัญชีของฉัน</span><span class="lang-en">👤 My Account</span><span class="lang-zh">👤 我的账户</span>
+        </h1>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Sidebar -->
+            <div class="lg:w-56 flex-shrink-0">
+                <!-- Mobile Tabs -->
+                <div class="flex lg:hidden gap-1 overflow-x-auto pb-2 mb-4">
+                    <button onclick="switchSection('profile')" class="sidebar-btn active px-3 py-2 text-xs font-semibold whitespace-nowrap"><span class="lang-th">โปรไฟล์</span><span class="lang-en">Profile</span><span class="lang-zh">个人</span></button>
+                    <button onclick="switchSection('orders')" class="sidebar-btn px-3 py-2 text-xs font-semibold whitespace-nowrap"><span class="lang-th">คำสั่งซื้อ</span><span class="lang-en">Orders</span><span class="lang-zh">订单</span></button>
+                    <button onclick="switchSection('addresses')" class="sidebar-btn px-3 py-2 text-xs font-semibold whitespace-nowrap"><span class="lang-th">ที่อยู่</span><span class="lang-en">Address</span><span class="lang-zh">地址</span></button>
+                    <button onclick="switchSection('wishlist')" class="sidebar-btn px-3 py-2 text-xs font-semibold whitespace-nowrap"><span class="lang-th">ถูกใจ</span><span class="lang-en">Wishlist</span><span class="lang-zh">收藏</span></button>
+                </div>
+                <!-- Desktop Sidebar -->
+                <div class="hidden lg:block bg-white rounded-xl shadow-md p-4 space-y-1">
+                    <button onclick="switchSection('profile')" class="sidebar-btn active w-full text-left px-4 py-2.5 text-sm font-semibold">👤 <span class="lang-th">โปรไฟล์</span><span class="lang-en">Profile</span><span class="lang-zh">个人资料</span></button>
+                    <button onclick="switchSection('orders')" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold">📦 <span class="lang-th">คำสั่งซื้อ</span><span class="lang-en">Orders</span><span class="lang-zh">订单</span></button>
+                    <button onclick="switchSection('addresses')" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold">📍 <span class="lang-th">ที่อยู่</span><span class="lang-en">Addresses</span><span class="lang-zh">地址</span></button>
+                    <button onclick="switchSection('wishlist')" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold">❤️ <span class="lang-th">รายการถูกใจ</span><span class="lang-en">Wishlist</span><span class="lang-zh">收藏</span></button>
+                    <hr>
+                    <button onclick="location.href='login.html'" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold text-red-500">🚪 <span class="lang-th">ออกจากระบบ</span><span class="lang-en">Logout</span><span class="lang-zh">退出登录</span></button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1">
+                <!-- Profile Section -->
+                <div id="sectionProfile" class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-thai-gold to-thai-orange rounded-full flex items-center justify-center text-3xl">😊</div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Somchai Jaidee</h2>
+                            <p class="text-gray-500 text-sm">somchai@email.com</p>
+                            <p class="text-gray-500 text-sm">08x-xxx-xxxx</p>
+                        </div>
+                        <button class="ml-auto bg-thai-cream text-thai-purple px-4 py-2 rounded-lg text-sm font-semibold hover:bg-thai-gold transition">
+                            <span class="lang-th">แก้ไข</span><span class="lang-en">Edit</span><span class="lang-zh">编辑</span>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-thai-cream rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-thai-red">12</p>
+                            <p class="text-xs text-gray-600"><span class="lang-th">คำสั่งซื้อ</span><span class="lang-en">Orders</span><span class="lang-zh">订单</span></p>
+                        </div>
+                        <div class="bg-thai-cream rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-thai-gold">฿45,890</p>
+                            <p class="text-xs text-gray-600"><span class="lang-th">ยอดรวม</span><span class="lang-en">Total Spent</span><span class="lang-zh">总消费</span></p>
+                        </div>
+                        <div class="bg-thai-cream rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-thai-purple">3</p>
+                            <p class="text-xs text-gray-600"><span class="lang-th">ที่อยู่</span><span class="lang-en">Addresses</span><span class="lang-zh">地址</span></p>
+                        </div>
+                        <div class="bg-thai-cream rounded-xl p-4 text-center">
+                            <p class="text-2xl font-bold text-thai-orange">8</p>
+                            <p class="text-xs text-gray-600"><span class="lang-th">ถูกใจ</span><span class="lang-en">Wishlist</span><span class="lang-zh">收藏</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="sectionOrders" class="bg-white rounded-xl shadow-md p-6 hidden">
+                    <h2 class="text-lg font-bold text-thai-purple mb-4"><span class="lang-th">📦 คำสั่งซื้อของฉัน</span><span class="lang-en">📦 My Orders</span><span class="lang-zh">📦 我的订单</span></h2>
+                    <div class="space-y-3">
+                        <div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer" onclick="location.href='order-detail.html'">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="font-bold text-sm">#TH20260504001</span>
+                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-semibold"><span class="lang-th">ชำระแล้ว</span><span class="lang-en">Paid</span><span class="lang-zh">已付款</span></span>
+                                </div>
+                                <p class="text-xs text-gray-500">2026-05-04 | 3 <span class="lang-th">รายการ</span><span class="lang-en">items</span><span class="lang-zh">件</span></p>
+                            </div>
+                            <span class="font-bold text-thai-red">฿17,660</span>
+                            <span class="text-gray-400">›</span>
+                        </div>
+                        <div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer" onclick="location.href='order-detail.html'">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="font-bold text-sm">#TH20260428002</span>
+                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-semibold"><span class="lang-th">จัดส่งแล้ว</span><span class="lang-en">Shipped</span><span class="lang-zh">已发货</span></span>
+                                </div>
+                                <p class="text-xs text-gray-500">2026-04-28 | 1 <span class="lang-th">รายการ</span><span class="lang-en">item</span><span class="lang-zh">件</span></p>
+                            </div>
+                            <span class="font-bold text-thai-red">฿2,490</span>
+                            <span class="text-gray-400">›</span>
+                        </div>
+                        <div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="font-bold text-sm">#TH20260420003</span>
+                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full font-semibold"><span class="lang-th">จัดส่งแล้ว</span><span class="lang-en">Delivered</span><span class="lang-zh">已送达</span></span>
+                                </div>
+                                <p class="text-xs text-gray-500">2026-04-20 | 2 <span class="lang-th">รายการ</span><span class="lang-en">items</span><span class="lang-zh">件</span></p>
+                            </div>
+                            <span class="font-bold text-thai-red">฿5,490</span>
+                            <span class="text-gray-400">›</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Addresses Section -->
+                <div id="sectionAddresses" class="bg-white rounded-xl shadow-md p-6 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold text-thai-purple"><span class="lang-th">📍 ที่อยู่ของฉัน</span><span class="lang-en">📍 My Addresses</span><span class="lang-zh">📍 我的地址</span></h2>
+                        <button class="bg-thai-red text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition">+ <span class="lang-th">เพิ่ม</span><span class="lang-en">Add</span><span class="lang-zh">添加</span></button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border-2 border-thai-gold rounded-xl p-4 relative">
+                            <span class="absolute top-2 right-2 bg-thai-gold text-thai-purple text-xs px-2 py-0.5 rounded font-bold"><span class="lang-th">ค่าเริ่มต้น</span><span class="lang-en">Default</span><span class="lang-zh">默认</span></span>
+                            <p class="font-semibold text-sm">สมชาย ใจดี</p>
+                            <p class="text-xs text-gray-500">08x-xxx-xxxx</p>
+                            <p class="text-xs text-gray-600 mt-1">123 ซอยสุขุมวิท 101/1 แขวงคลองตัน เขตวัฒนา กรุงเทพฯ 10110</p>
+                            <div class="flex gap-2 mt-3">
+                                <button class="text-xs text-thai-red hover:underline"><span class="lang-th">แก้ไข</span><span class="lang-en">Edit</span><span class="lang-zh">编辑</span></button>
+                                <button class="text-xs text-gray-400 hover:underline"><span class="lang-th">ลบ</span><span class="lang-en">Delete</span><span class="lang-zh">删除</span></button>
+                            </div>
+                        </div>
+                        <div class="border rounded-xl p-4">
+                            <p class="font-semibold text-sm">สมชาย ใจดี</p>
+                            <p class="text-xs text-gray-500">089-xxx-xxxx</p>
+                            <p class="text-xs text-gray-600 mt-1">456 ถ.เพชรเกษม ต.ป่าคันจู อ.หาดใหญ่ สงขลา 90110</p>
+                            <div class="flex gap-2 mt-3">
+                                <button class="text-xs text-thai-red hover:underline"><span class="lang-th">แก้ไข</span><span class="lang-en">Edit</span><span class="lang-zh">编辑</span></button>
+                                <button class="text-xs text-gray-400 hover:underline"><span class="lang-th">ลบ</span><span class="lang-en">Delete</span><span class="lang-zh">删除</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wishlist Section -->
+                <div id="sectionWishlist" class="bg-white rounded-xl shadow-md p-6 hidden">
+                    <h2 class="text-lg font-bold text-thai-purple mb-4"><span class="lang-th">❤️ รายการถูกใจ</span><span class="lang-en">❤️ Wishlist</span><span class="lang-zh">❤️ 我的收藏</span></h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="border rounded-xl overflow-hidden hover:shadow-lg transition">
+                            <div class="aspect-square bg-gradient-to-br from-thai-cream to-yellow-100 flex items-center justify-center text-4xl">📱</div>
+                            <div class="p-3">
+                                <h3 class="font-semibold text-sm truncate"><span class="lang-th">สมาร์ทโฟน</span><span class="lang-en">Smartphone</span><span class="lang-zh">智能手机</span></h3>
+                                <p class="text-thai-red font-bold text-sm">฿12,990</p>
+                                <button class="mt-1 w-full bg-thai-gold text-thai-purple py-1.5 rounded text-xs font-bold hover:bg-thai-orange hover:text-white transition">🛒 <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span></button>
+                            </div>
+                        </div>
+                        <div class="border rounded-xl overflow-hidden hover:shadow-lg transition">
+                            <div class="aspect-square bg-gradient-to-br from-rose-50 to-pink-100 flex items-center justify-center text-4xl">👗</div>
+                            <div class="p-3">
+                                <h3 class="font-semibold text-sm truncate"><span class="lang-th">ชุดไทย</span><span class="lang-en">Thai Dress</span><span class="lang-zh">泰式裙子</span></h3>
+                                <p class="text-thai-red font-bold text-sm">฿1,290</p>
+                                <button class="mt-1 w-full bg-thai-gold text-thai-purple py-1.5 rounded text-xs font-bold hover:bg-thai-orange hover:text-white transition">🛒 <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span></button>
+                            </div>
+                        </div>
+                        <div class="border rounded-xl overflow-hidden hover:shadow-lg transition">
+                            <div class="aspect-square bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center text-4xl">🍜</div>
+                            <div class="p-3">
+                                <h3 class="font-semibold text-sm truncate"><span class="lang-th">ซอสพริกไทย</span><span class="lang-en">Thai Sauce</span><span class="lang-zh">泰式酱料</span></h3>
+                                <p class="text-thai-red font-bold text-sm">฿89</p>
+                                <button class="mt-1 w-full bg-thai-gold text-thai-purple py-1.5 rounded text-xs font-bold hover:bg-thai-orange hover:text-white transition">🛒 <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
+        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
+        function switchSection(name){
+            var sections=['Profile','Orders','Addresses','Wishlist'];
+            sections.forEach(function(s){document.getElementById('section'+s).classList.toggle('hidden',s.toLowerCase()!==name)});
+            document.querySelectorAll('.sidebar-btn').forEach(function(b){b.classList.remove('active')});
+            document.querySelectorAll('.sidebar-btn').forEach(function(b){
+                if(b.textContent.toLowerCase().indexOf(name.substring(0,3))!==-1)b.classList.add('active');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="th" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThaiShop - Order Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config={theme:{extend:{colors:{'thai-gold':'#F2B705','thai-orange':'#F28705','thai-red':'#BF0404','thai-purple':'#730202','thai-cream':'#FFF8E7','thai-saffron':'#FF9933'}}}}
+    </script>
+    <style>
+        *{box-sizing:border-box}
+        body{font-family:'Noto Sans Thai','Noto Sans SC',sans-serif;background:#FFF8E7}
+        .lang-zh,.lang-en,.lang-th{display:none!important}
+        body.lang-zh .lang-zh{display:inline-block!important}
+        body.lang-en .lang-en{display:inline-block!important}
+        body.lang-th .lang-th{display:inline-block!important}
+        body.lang-zh .lang-block-zh{display:block!important}
+        body.lang-en .lang-block-en{display:block!important}
+        body.lang-th .lang-block-th{display:block!important}
+        .gold-text{background:linear-gradient(180deg,#F2B705 0%,#FF9933 50%,#F2B705 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .lang-btn.active{background:#BF0404!important;color:white!important}
+        .timeline-dot{width:16px;height:16px;border-radius:50%;border:3px solid #e5e7eb;background:white;position:relative;z-index:1;transition:all .3s}
+        .timeline-dot.done{background:#16a34a;border-color:#16a34a}
+        .timeline-dot.current{background:#F2B705;border-color:#F2B705;box-shadow:0 0 0 4px rgba(242,183,5,0.3)}
+        .timeline-line{width:3px;height:40px;background:#e5e7eb;margin-left:7px;transition:background .3s}
+        .timeline-line.done{background:#16a34a}
+    </style>
+</head>
+<body class="lang-th">
+    <!-- Navbar -->
+    <nav class="bg-thai-purple text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="lg:hidden text-2xl">☰</button>
+                <a href="index-thai.html" class="text-2xl font-bold gold-text">ThaiShop</a>
+            </div>
+            <div class="hidden lg:flex items-center gap-6 text-sm">
+                <a href="index-thai.html" class="hover:text-thai-gold transition"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+                <a href="products.html" class="hover:text-thai-gold transition"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex gap-1 text-xs">
+                    <button onclick="switchLang('th')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">ไทย</button>
+                    <button onclick="switchLang('en')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">EN</button>
+                    <button onclick="switchLang('zh')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">中文</button>
+                </div>
+                <a href="cart.html" class="hover:text-thai-gold transition">🛒</a>
+                <a href="account.html" class="text-thai-gold">👤</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="max-w-7xl mx-auto px-4 py-3 text-sm text-gray-500">
+        <a href="index-thai.html" class="hover:text-thai-red"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+        <span class="mx-2">›</span>
+        <a href="account.html" class="hover:text-thai-red"><span class="lang-th">บัญชี</span><span class="lang-en">Account</span><span class="lang-zh">账户</span></a>
+        <span class="mx-2">›</span>
+        <span class="text-thai-purple font-semibold">#TH20260504001</span>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 pb-12">
+        <!-- Order Header -->
+        <div class="flex flex-wrap items-center justify-between mb-6 gap-3">
+            <div>
+                <h1 class="text-2xl font-bold text-thai-purple">
+                    <span class="lang-th">คำสั่งซื้อ #TH20260504001</span><span class="lang-en">Order #TH20260504001</span><span class="lang-zh">订单 #TH20260504001</span>
+                </h1>
+                <p class="text-sm text-gray-500">2026-05-04 14:30</p>
+            </div>
+            <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full font-bold text-sm">
+                <span class="lang-th">ชำระเงินแล้ว</span><span class="lang-en">Paid</span><span class="lang-zh">已付款</span>
+            </span>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="flex-1 space-y-6">
+                <!-- Status Timeline -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="font-bold text-thai-purple mb-4">
+                        <span class="lang-th">📋 สถานะคำสั่งซื้อ</span><span class="lang-en">📋 Order Status</span><span class="lang-zh">📋 订单状态</span>
+                    </h2>
+                    <div class="flex">
+                        <div class="flex flex-col items-start">
+                            <div class="timeline-dot done"></div>
+                            <div class="timeline-line done"></div>
+                            <div class="timeline-dot done"></div>
+                            <div class="timeline-line done"></div>
+                            <div class="timeline-dot current"></div>
+                            <div class="timeline-line"></div>
+                            <div class="timeline-dot"></div>
+                        </div>
+                        <div class="ml-4 space-y-6">
+                            <div>
+                                <p class="font-semibold text-sm text-green-700">
+                                    <span class="lang-th">✅ สั่งซื้อแล้ว</span><span class="lang-en">✅ Order Placed</span><span class="lang-zh">✅ 已下单</span>
+                                </p>
+                                <p class="text-xs text-gray-500">2026-05-04 14:30</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-sm text-green-700">
+                                    <span class="lang-th">💳 ชำระเงินแล้ว</span><span class="lang-en">💳 Payment Confirmed</span><span class="lang-zh">💳 已付款</span>
+                                </p>
+                                <p class="text-xs text-gray-500">2026-05-04 14:31 — PromptPay</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-sm text-thai-gold">
+                                    <span class="lang-th">📦 กำลังเตรียมจัดส่ง</span><span class="lang-en">📦 Preparing to Ship</span><span class="lang-zh">📦 备货中</span>
+                                </p>
+                                <p class="text-xs text-gray-400"><span class="lang-th">รอดำเนินการ</span><span class="lang-en">Pending</span><span class="lang-zh">待处理</span></p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">
+                                    <span class="lang-th">🚚 จัดส่งแล้ว</span><span class="lang-en">🚚 Delivered</span><span class="lang-zh">🚚 已送达</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Info -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="font-bold text-thai-purple mb-3">
+                        <span class="lang-th">📄 ข้อมูลคำสั่งซื้อ</span><span class="lang-en">📄 Order Information</span><span class="lang-zh">📄 订单信息</span>
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div><span class="text-gray-500"><span class="lang-th">หมายเลขคำสั่งซื้อ:</span><span class="lang-en">Order Number:</span><span class="lang-zh">订单号:</span></span> <span class="font-semibold">#TH20260504001</span></div>
+                        <div><span class="text-gray-500"><span class="lang-th">วันที่สั่ง:</span><span class="lang-en">Order Date:</span><span class="lang-zh">下单日期:</span></span> <span class="font-semibold">2026-05-04</span></div>
+                        <div><span class="text-gray-500"><span class="lang-th">วิธีชำระเงิน:</span><span class="lang-en">Payment Method:</span><span class="lang-zh">支付方式:</span></span> <span class="font-semibold">📱 PromptPay</span></div>
+                        <div><span class="text-gray-500"><span class="lang-th">วิธีจัดส่ง:</span><span class="lang-en">Shipping:</span><span class="lang-zh">配送:</span></span> <span class="font-semibold"><span class="lang-th">มาตรฐาน (3-5 วัน)</span><span class="lang-en">Standard (3-5 days)</span><span class="lang-zh">标准配送</span></span></div>
+                    </div>
+                    <!-- Shipping Address -->
+                    <div class="mt-4 bg-thai-cream rounded-lg p-3">
+                        <p class="font-semibold text-sm mb-1"><span class="lang-th">📍 ที่อยู่จัดส่ง</span><span class="lang-en">📍 Shipping Address</span><span class="lang-zh">📍 收货地址</span></p>
+                        <p class="text-sm text-gray-600">สมชาย ใจดี | 08x-xxx-xxxx</p>
+                        <p class="text-sm text-gray-600">123 ซอยสุขุมวิท 101/1 แขวงคลองตัน เขตวัฒนา กรุงเทพฯ 10110</p>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <h2 class="font-bold text-thai-purple mb-3">
+                        <span class="lang-th">🛍️ รายการสินค้า</span><span class="lang-en">🛍️ Order Items</span><span class="lang-zh">🛍️ 商品列表</span>
+                    </h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b text-gray-500 text-xs">
+                                    <th class="pb-2 text-left"><span class="lang-th">สินค้า</span><span class="lang-en">Product</span><span class="lang-zh">商品</span></th>
+                                    <th class="pb-2 text-center"><span class="lang-th">จำนวน</span><span class="lang-en">Qty</span><span class="lang-zh">数量</span></th>
+                                    <th class="pb-2 text-right"><span class="lang-th">ราคา/หน่วย</span><span class="lang-en">Unit Price</span><span class="lang-zh">单价</span></th>
+                                    <th class="pb-2 text-right"><span class="lang-th">รวม</span><span class="lang-en">Subtotal</span><span class="lang-zh">小计</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="py-3 flex items-center gap-3">
+                                        <span class="w-12 h-12 bg-gradient-to-br from-thai-cream to-yellow-100 rounded-lg flex items-center justify-center text-xl">📱</span>
+                                        <span class="font-semibold"><span class="lang-th">สมาร์ทโฟน Pro Max 256GB</span><span class="lang-en">Smartphone Pro Max 256GB</span><span class="lang-zh">智能手机 Pro Max 256GB</span></span>
+                                    </td>
+                                    <td class="text-center">1</td>
+                                    <td class="text-right">฿12,990</td>
+                                    <td class="text-right font-semibold">฿12,990</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-3 flex items-center gap-3">
+                                        <span class="w-12 h-12 bg-gradient-to-br from-sky-50 to-blue-100 rounded-lg flex items-center justify-center text-xl">🎧</span>
+                                        <span class="font-semibold"><span class="lang-th">หูฟังไร้สาย Pro</span><span class="lang-en">Wireless Earbuds Pro</span><span class="lang-zh">无线耳机 Pro</span></span>
+                                    </td>
+                                    <td class="text-center">2</td>
+                                    <td class="text-right">฿1,990</td>
+                                    <td class="text-right font-semibold">฿3,980</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 flex items-center gap-3">
+                                        <span class="w-12 h-12 bg-gradient-to-br from-amber-50 to-orange-100 rounded-lg flex items-center justify-center text-xl">🔋</span>
+                                        <span class="font-semibold"><span class="lang-th">แบตเตอรี่ 20000mAh</span><span class="lang-en">Power Bank 20000mAh</span><span class="lang-zh">充电宝 20000mAh</span></span>
+                                    </td>
+                                    <td class="text-center">1</td>
+                                    <td class="text-right">฿690</td>
+                                    <td class="text-right font-semibold">฿690</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Sidebar -->
+            <div class="lg:w-72">
+                <div class="bg-white rounded-xl shadow-md p-5 sticky top-20">
+                    <h3 class="font-bold text-thai-purple mb-3">
+                        <span class="lang-th">สรุปยอด</span><span class="lang-en">Summary</span><span class="lang-zh">金额汇总</span>
+                    </h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between"><span class="text-gray-600"><span class="lang-th">ยอดรวม</span><span class="lang-en">Subtotal</span><span class="lang-zh">小计</span></span><span>฿17,660</span></div>
+                        <div class="flex justify-between"><span class="text-gray-600"><span class="lang-th">ค่าจัดส่ง</span><span class="lang-en">Shipping</span><span class="lang-zh">运费</span></span><span class="text-green-600"><span class="lang-th">ฟรี</span><span class="lang-en">Free</span><span class="lang-zh">免运费</span></span></div>
+                        <hr>
+                        <div class="flex justify-between text-lg font-bold"><span><span class="lang-th">ยอดรวมทั้งหมด</span><span class="lang-en">Total</span><span class="lang-zh">合计</span></span><span class="text-thai-red">฿17,660</span></div>
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <button class="w-full bg-thai-gold text-thai-purple py-2.5 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition">
+                            <span class="lang-th">📦 ติดตามพัสดุ</span><span class="lang-en">📦 Track Package</span><span class="lang-zh">📦 物流追踪</span>
+                        </button>
+                        <button class="w-full bg-white border-2 border-thai-gold text-thai-purple py-2.5 rounded-lg font-bold text-sm hover:bg-thai-cream transition">
+                            <span class="lang-th">🔄 สั่งซื้ออีกครั้ง</span><span class="lang-en">🔄 Reorder</span><span class="lang-zh">🔄 再次购买</span>
+                        </button>
+                        <button class="w-full bg-white border-2 border-gray-200 text-gray-500 py-2.5 rounded-lg font-bold text-sm hover:border-red-300 hover:text-red-500 transition">
+                            <span class="lang-th">💸 ขอคืนเงิน</span><span class="lang-en">💸 Request Refund</span><span class="lang-zh">💸 申请退款</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
+        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
+    </script>
+</body>
+</html>
