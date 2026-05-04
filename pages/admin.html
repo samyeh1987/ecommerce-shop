@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModernShop 後台管理系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand': '#FF6B35',
+                        'brand-dark': '#E55A25',
+                        'sidebar': '#1E293B',
+                        'sidebar-hover': '#334155',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Noto Sans TC', sans-serif; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        .nav-item.active { background: #FF6B35; color: white; }
+        .nav-item:not(.active):hover { background: #334155; }
+        .status-badge { padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+        .status-pending { background: #FEF3C7; color: #92400E; }
+        .status-paid { background: #D1FAE5; color: #065F46; }
+        .status-shipped { background: #DBEAFE; color: #1E40AF; }
+        .status-delivered { background: #E0E7FF; color: #3730A3; }
+        .status-cancelled { background: #FEE2E2; color: #991B1B; }
+        .status-refunded { background: #FCE7F3; color: #9D174D; }
+        .metric-card { transition: all 0.3s ease; }
+        .metric-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.12); }
+        .table-row:hover { background: #F8FAFC; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); position: fixed; z-index: 50; }
+            .sidebar.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Mobile Menu Button -->
+    <button id="menuBtn" class="md:hidden fixed top-4 left-4 z-50 bg-sidebar text-white p-2 rounded-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar w-64 bg-sidebar text-white flex-shrink-0 flex flex-col transition-transform duration-300">
+            <div class="p-6 border-b border-gray-700">
+                <h1 class="text-xl font-bold flex items-center gap-2">
+                    <span class="bg-brand w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold">M</span>
+                    ModernShop
+                </h1>
+                <p class="text-gray-400 text-xs mt-1">後台管理系統</p>
+            </div>
+            <nav class="flex-1 py-4">
+                <div class="px-4 mb-2 text-xs text-gray-500 uppercase tracking-wider">主要功能</div>
+                <a href="#" class="nav-item active flex items-center gap-3 px-6 py-3 text-sm transition-colors" data-page="dashboard">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    數據儀表板
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-6 py-3 text-sm transition-colors" data-page="products">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    商品管理
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-6 py-3 text-sm transition-colors" data-page="orders">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    訂單管理
+                </a>
+                <a href="#" class="nav-item flex items-center gap-3 px-6 py-3 text-sm transition-colors" data-page="users">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    用戶管理
+                </a>
+                <div class="px-4 mt-6 mb-2 text-xs text-gray-500 uppercase tracking-wider">系統</div>
+                <a href="#" class="nav-item flex items-center gap-3 px-6 py-3 text-sm transition-colors" data-page="settings">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    系統設定
+                </a>
+            </nav>
+            <div class="p-4 border-t border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-brand flex items-center justify-center text-white text-sm font-bold">A</div>
+                    <div>
+                        <div class="text-sm font-medium">Admin</div>
+                        <div class="text-xs text-gray-400">admin@modernshop.com</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-auto">
+            <!-- Top Bar -->
+            <header class="bg-white border-b px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+                <div>
+                    <h2 id="pageTitle" class="text-lg font-bold text-gray-800">數據儀表板</h2>
+                    <p class="text-sm text-gray-500">歡迎回來，管理員</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center">3</span>
+                    </div>
+                    <div class="text-sm text-gray-500">2026/05/04</div>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <section id="page-dashboard" class="page-section active p-6">
+                <!-- Metric Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="metric-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                            </div>
+                            <span class="text-xs text-green-500 font-medium bg-green-50 px-2 py-1 rounded-full">+12.5%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-800">256</div>
+                        <div class="text-sm text-gray-500 mt-1">今日訂單</div>
+                    </div>
+                    <div class="metric-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </div>
+                            <span class="text-xs text-green-500 font-medium bg-green-50 px-2 py-1 rounded-full">+8.3%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-800">¥128,450</div>
+                        <div class="text-sm text-gray-500 mt-1">總營收</div>
+                    </div>
+                    <div class="metric-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <span class="text-xs text-green-500 font-medium bg-green-50 px-2 py-1 rounded-full">+5.1%</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-800">1,842</div>
+                        <div class="text-sm text-gray-500 mt-1">活躍用戶</div>
+                    </div>
+                    <div class="metric-card bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
+                            <span class="text-xs text-red-500 font-medium bg-red-50 px-2 py-1 rounded-full">需處理</span>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-800">15</div>
+                        <div class="text-sm text-gray-500 mt-1">庫存警告</div>
+                    </div>
+                </div>
+
+                <!-- Chart Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-4">近7日營收趨勢</h3>
+                        <div class="flex items-end gap-3 h-48">
+                            <div class="flex-1 flex flex-col items-center gap-1">
+                                <div class="w-full bg-brand/20 rounded-t-lg" style="height:60%"></div>
+                                <span class="text-xs text-gray-400">一</span>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center gap-1">
+                                <div class="w-full bg-brand/30 rounded-t-lg" style="height:75%"></div>
+                                <span class="text-xs text-gray-400">二</span>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center gap-1">
+                                <div class="w-full bg-brand/40 rounded-t-lg" style="height:50%"></div>
+                                <span class="text-xs text-gray-400">三</span>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center gap-1">
+                                <div class="w-full bg-brand/50 rounded-t-lg" style="height:90%"></div>
+                                <span class="text-xs text-gray-400">四</span>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center gap-1">
+                                <div class="w-full bg-brand/60 rounded-t-lg" style="height:70%"></div>
+                                <span class="text-xs text-gray-400">五</span>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center gap-1">
+                                <div class="w-full bg-brand/80 rounded-t-lg" style="height:95%"></div>
+                                <span class="text-xs text-gray-400">六</span>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center gap-1">
+                                <div class="w-full bg-brand rounded-t-lg" style="height:85%"></div>
+                                <span class="text-xs text-gray-400">日</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-4">商品分類銷售佔比</h3>
+                        <div class="flex flex-col gap-4 mt-4">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1"><span>3C 數碼</span><span class="text-gray-500">35%</span></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3"><div class="bg-brand rounded-full h-3" style="width:35%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1"><span>時尚服飾</span><span class="text-gray-500">28%</span></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3"><div class="bg-orange-400 rounded-full h-3" style="width:28%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1"><span>家居生活</span><span class="text-gray-500">20%</span></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3"><div class="bg-amber-400 rounded-full h-3" style="width:20%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1"><span>運動戶外</span><span class="text-gray-500">12%</span></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3"><div class="bg-yellow-400 rounded-full h-3" style="width:12%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1"><span>其他</span><span class="text-gray-500">5%</span></div>
+                                <div class="w-full bg-gray-100 rounded-full h-3"><div class="bg-gray-300 rounded-full h-3" style="width:5%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                    <div class="p-6 border-b flex items-center justify-between">
+                        <h3 class="font-bold text-gray-800">最新訂單</h3>
+                        <a href="#" class="text-brand text-sm hover:underline" onclick="switchPage('orders');return false;">查看全部</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 text-gray-500">
+                                <tr><th class="px-6 py-3 text-left">訂單號</th><th class="px-6 py-3 text-left">用戶</th><th class="px-6 py-3 text-left">金額</th><th class="px-6 py-3 text-left">狀態</th><th class="px-6 py-3 text-left">日期</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-mono text-brand">#ORD-20260504-001</td><td class="px-6 py-4">王小明</td><td class="px-6 py-4">¥2,580</td><td class="px-6 py-4"><span class="status-badge status-paid">已付款</span></td><td class="px-6 py-4 text-gray-400">2026-05-04</td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-mono text-brand">#ORD-20260504-002</td><td class="px-6 py-4">李美麗</td><td class="px-6 py-4">¥890</td><td class="px-6 py-4"><span class="status-badge status-shipped">已出貨</span></td><td class="px-6 py-4 text-gray-400">2026-05-04</td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-mono text-brand">#ORD-20260503-015</td><td class="px-6 py-4">張大華</td><td class="px-6 py-4">¥4,200</td><td class="px-6 py-4"><span class="status-badge status-pending">待付款</span></td><td class="px-6 py-4 text-gray-400">2026-05-03</td></tr>
+                                <tr class="table-row"><td class="px-6 py-4 font-mono text-brand">#ORD-20260503-014</td><td class="px-6 py-4">陳小芬</td><td class="px-6 py-4">¥1,350</td><td class="px-6 py-4"><span class="status-badge status-delivered">已送達</span></td><td class="px-6 py-4 text-gray-400">2026-05-03</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Page -->
+            <section id="page-products" class="page-section p-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:flex-none">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <input type="text" placeholder="搜索商品..." class="pl-10 pr-4 py-2 border rounded-lg text-sm w-full sm:w-64 focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none">
+                        </div>
+                    </div>
+                    <button class="bg-brand hover:bg-brand-dark text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        新增商品
+                    </button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 text-gray-500">
+                                <tr><th class="px-6 py-3 text-left">商品名稱</th><th class="px-6 py-3 text-left">分類</th><th class="px-6 py-3 text-left">價格</th><th class="px-6 py-3 text-left">庫存</th><th class="px-6 py-3 text-left">狀態</th><th class="px-6 py-3 text-left">操作</th></tr>
+                            </thead>
+                            <tbody id="productTable">
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-medium">iPhone 17 Pro Max</td><td class="px-6 py-4 text-gray-500">3C 數碼</td><td class="px-6 py-4">¥9,999</td><td class="px-6 py-4"><span class="text-green-600 font-medium">128</span></td><td class="px-6 py-4"><span class="status-badge status-paid">上架中</span></td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">下架</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-medium">AirPods Pro 3</td><td class="px-6 py-4 text-gray-500">3C 數碼</td><td class="px-6 py-4">¥1,899</td><td class="px-6 py-4"><span class="text-green-600 font-medium">256</span></td><td class="px-6 py-4"><span class="status-badge status-paid">上架中</span></td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">下架</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-medium">運動跑鞋 Ultra Boost</td><td class="px-6 py-4 text-gray-500">運動戶外</td><td class="px-6 py-4">¥1,299</td><td class="px-6 py-4"><span class="text-red-500 font-medium">5</span></td><td class="px-6 py-4"><span class="status-badge status-paid">上架中</span></td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">下架</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-medium">北歐風檯燈</td><td class="px-6 py-4 text-gray-500">家居生活</td><td class="px-6 py-4">¥459</td><td class="px-6 py-4"><span class="text-green-600 font-medium">82</span></td><td class="px-6 py-4"><span class="status-badge status-paid">上架中</span></td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">下架</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4 font-medium">春季洋裝 - 碎花款</td><td class="px-6 py-4 text-gray-500">時尚服飾</td><td class="px-6 py-4">¥680</td><td class="px-6 py-4"><span class="text-orange-500 font-medium">12</span></td><td class="px-6 py-4"><span class="status-badge status-paid">上架中</span></td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">下架</button></td></tr>
+                                <tr class="table-row"><td class="px-6 py-4 font-medium text-gray-400">MacBook Pro M4 (已下架)</td><td class="px-6 py-4 text-gray-400">3C 數碼</td><td class="px-6 py-4 text-gray-400">¥14,999</td><td class="px-6 py-4 text-gray-400">0</td><td class="px-6 py-4"><span class="status-badge status-cancelled">已下架</span></td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-green-500 hover:underline text-sm">上架</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Page -->
+            <section id="page-orders" class="page-section p-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <div class="relative">
+                            <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <input type="text" placeholder="搜索訂單號..." class="pl-10 pr-4 py-2 border rounded-lg text-sm w-full sm:w-64 focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none">
+                        </div>
+                        <select class="border rounded-lg px-3 py-2 text-sm text-gray-600 focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none" id="orderFilter">
+                            <option value="all">全部狀態</option>
+                            <option value="pending">待付款</option>
+                            <option value="paid">已付款</option>
+                            <option value="shipped">已出貨</option>
+                            <option value="delivered">已送達</option>
+                            <option value="cancelled">已取消</option>
+                            <option value="refunded">已退款</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 text-gray-500">
+                                <tr><th class="px-6 py-3 text-left">訂單號</th><th class="px-6 py-3 text-left">用戶</th><th class="px-6 py-3 text-left">金額</th><th class="px-6 py-3 text-left">狀態</th><th class="px-6 py-3 text-left">付款方式</th><th class="px-6 py-3 text-left">日期</th><th class="px-6 py-3 text-left">操作</th></tr>
+                            </thead>
+                            <tbody id="orderTable">
+                                <tr class="table-row border-b" data-status="paid"><td class="px-6 py-4 font-mono text-brand">#ORD-20260504-001</td><td class="px-6 py-4">王小明</td><td class="px-6 py-4 font-medium">¥2,580</td><td class="px-6 py-4"><span class="status-badge status-paid">已付款</span></td><td class="px-6 py-4 text-gray-500">微信支付</td><td class="px-6 py-4 text-gray-400">2026-05-04</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm">詳情</button></td></tr>
+                                <tr class="table-row border-b" data-status="shipped"><td class="px-6 py-4 font-mono text-brand">#ORD-20260504-002</td><td class="px-6 py-4">李美麗</td><td class="px-6 py-4 font-medium">¥890</td><td class="px-6 py-4"><span class="status-badge status-shipped">已出貨</span></td><td class="px-6 py-4 text-gray-500">支付寶</td><td class="px-6 py-4 text-gray-400">2026-05-04</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm">詳情</button></td></tr>
+                                <tr class="table-row border-b" data-status="pending"><td class="px-6 py-4 font-mono text-brand">#ORD-20260503-015</td><td class="px-6 py-4">張大華</td><td class="px-6 py-4 font-medium">¥4,200</td><td class="px-6 py-4"><span class="status-badge status-pending">待付款</span></td><td class="px-6 py-4 text-gray-500">—</td><td class="px-6 py-4 text-gray-400">2026-05-03</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm">詳情</button></td></tr>
+                                <tr class="table-row border-b" data-status="delivered"><td class="px-6 py-4 font-mono text-brand">#ORD-20260503-014</td><td class="px-6 py-4">陳小芬</td><td class="px-6 py-4 font-medium">¥1,350</td><td class="px-6 py-4"><span class="status-badge status-delivered">已送達</span></td><td class="px-6 py-4 text-gray-500">信用卡</td><td class="px-6 py-4 text-gray-400">2026-05-03</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm">詳情</button></td></tr>
+                                <tr class="table-row border-b" data-status="cancelled"><td class="px-6 py-4 font-mono text-brand">#ORD-20260502-008</td><td class="px-6 py-4">林志豪</td><td class="px-6 py-4 font-medium">¥720</td><td class="px-6 py-4"><span class="status-badge status-cancelled">已取消</span></td><td class="px-6 py-4 text-gray-500">—</td><td class="px-6 py-4 text-gray-400">2026-05-02</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm">詳情</button></td></tr>
+                                <tr class="table-row" data-status="refunded"><td class="px-6 py-4 font-mono text-brand">#ORD-20260501-003</td><td class="px-6 py-4">黃雅婷</td><td class="px-6 py-4 font-medium">¥3,600</td><td class="px-6 py-4"><span class="status-badge status-refunded">已退款</span></td><td class="px-6 py-4 text-gray-500">微信支付</td><td class="px-6 py-4 text-gray-400">2026-05-01</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm">詳情</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Page -->
+            <section id="page-users" class="page-section p-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                    <div class="relative flex-1 sm:flex-none">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <input type="text" placeholder="搜索用戶..." class="pl-10 pr-4 py-2 border rounded-lg text-sm w-full sm:w-64 focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none">
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-50 text-gray-500">
+                                <tr><th class="px-6 py-3 text-left">用戶</th><th class="px-6 py-3 text-left">Email</th><th class="px-6 py-3 text-left">角色</th><th class="px-6 py-3 text-left">註冊日期</th><th class="px-6 py-3 text-left">操作</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row border-b"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-brand/10 text-brand flex items-center justify-center text-sm font-bold">王</div><span class="font-medium">王小明</span></div></td><td class="px-6 py-4 text-gray-500">ming@example.com</td><td class="px-6 py-4"><span class="status-badge status-paid">客戶</span></td><td class="px-6 py-4 text-gray-400">2026-01-15</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">停用</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold">李</div><span class="font-medium">李美麗</span></div></td><td class="px-6 py-4 text-gray-500">meili@example.com</td><td class="px-6 py-4"><span class="status-badge status-paid">客戶</span></td><td class="px-6 py-4 text-gray-400">2026-02-20</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">停用</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm font-bold">陳</div><span class="font-medium">陳管理</span></div></td><td class="px-6 py-4 text-gray-500">admin@example.com</td><td class="px-6 py-4"><span class="status-badge status-shipped">管理員</span></td><td class="px-6 py-4 text-gray-400">2025-12-01</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">停用</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-sm font-bold">張</div><span class="font-medium">張大華</span></div></td><td class="px-6 py-4 text-gray-500">dahua@example.com</td><td class="px-6 py-4"><span class="status-badge status-paid">客戶</span></td><td class="px-6 py-4 text-gray-400">2026-03-10</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">停用</button></td></tr>
+                                <tr class="table-row border-b"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-sm font-bold">林</div><span class="font-medium">林商家</span></div></td><td class="px-6 py-4 text-gray-500">vendor@example.com</td><td class="px-6 py-4"><span class="status-badge status-pending">商家</span></td><td class="px-6 py-4 text-gray-400">2026-04-01</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">停用</button></td></tr>
+                                <tr class="table-row"><td class="px-6 py-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center text-sm font-bold">黃</div><span class="font-medium">黃雅婷</span></div></td><td class="px-6 py-4 text-gray-500">yating@example.com</td><td class="px-6 py-4"><span class="status-badge status-paid">客戶</span></td><td class="px-6 py-4 text-gray-400">2026-04-18</td><td class="px-6 py-4"><button class="text-brand hover:underline text-sm mr-3">編輯</button><button class="text-red-500 hover:underline text-sm">停用</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Page -->
+            <section id="page-settings" class="page-section p-6">
+                <div class="max-w-2xl">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-4">基本設定</h3>
+                        <div class="space-y-4">
+                            <div><label class="block text-sm text-gray-600 mb-1">網站名稱</label><input type="text" value="ModernShop" class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none"></div>
+                            <div><label class="block text-sm text-gray-600 mb-1">聯絡 Email</label><input type="email" value="admin@modernshop.com" class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none"></div>
+                            <div><label class="block text-sm text-gray-600 mb-1">貨幣單位</label><select class="w-full border rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-brand/20 focus:border-brand outline-none"><option>CNY ¥</option><option>THB ฿</option><option>USD $</option></select></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-4">通知設定</h3>
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between"><span class="text-sm text-gray-600">新訂單通知</span><div class="relative"><input type="checkbox" checked class="sr-only peer"><div class="w-10 h-5 bg-gray-200 peer-checked:bg-brand rounded-full cursor-pointer after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-5"></div></div></label>
+                            <label class="flex items-center justify-between"><span class="text-sm text-gray-600">庫存警告通知</span><div class="relative"><input type="checkbox" checked class="sr-only peer"><div class="w-10 h-5 bg-gray-200 peer-checked:bg-brand rounded-full cursor-pointer after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-5"></div></div></label>
+                            <label class="flex items-center justify-between"><span class="text-sm text-gray-600">退款申請通知</span><div class="relative"><input type="checkbox" class="sr-only peer"><div class="w-10 h-5 bg-gray-200 peer-checked:bg-brand rounded-full cursor-pointer after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-transform peer-checked:after:translate-x-5"></div></div></label>
+                        </div>
+                    </div>
+                    <button class="mt-6 bg-brand hover:bg-brand-dark text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors">儲存設定</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page-section');
+        const pageTitle = document.getElementById('pageTitle');
+        const sidebar = document.querySelector('.sidebar');
+        const menuBtn = document.getElementById('menuBtn');
+        const titles = { dashboard: '數據儀表板', products: '商品管理', orders: '訂單管理', users: '用戶管理', settings: '系統設定' };
+
+        function switchPage(pageName) {
+            navItems.forEach(i => i.classList.remove('active'));
+            pages.forEach(p => p.classList.remove('active'));
+            document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
+            document.getElementById(`page-${pageName}`).classList.add('active');
+            pageTitle.textContent = titles[pageName] || pageName;
+            if (window.innerWidth < 768) sidebar.classList.remove('open');
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchPage(item.dataset.page);
+            });
+        });
+
+        // Mobile menu
+        menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 768 && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) sidebar.classList.remove('open');
+        });
+
+        // Order filter
+        document.getElementById('orderFilter').addEventListener('change', function() {
+            const status = this.value;
+            document.querySelectorAll('#orderTable tr').forEach(row => {
+                row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
