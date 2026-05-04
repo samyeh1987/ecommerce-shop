@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/pages/index-thai.html" },
+    { "source": "/thai", "destination": "/pages/index-thai.html" },
+    { "source": "/admin", "destination": "/pages/admin.html" },
+    { "source": "/home", "destination": "/pages/index.html" }
+  ]
+}
