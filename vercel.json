@@ -1,4 +1,6 @@
 {
+  "buildCommand": "echo 'skip build - static HTML site'",
+  "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/pages/index-thai.html" },
     { "source": "/thai", "destination": "/pages/index-thai.html" },
