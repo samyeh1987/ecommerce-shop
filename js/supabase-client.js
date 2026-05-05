@@ -810,21 +810,33 @@ async function register(email, password, name, phone) {
       return createResponse(false, null, parseSupabaseError(error, currentLang));
     }
 
-    // 建立使用者資料
+    // 建立使用者資料（由資料庫 trigger handle_new_user 自動建立，這裡只做備援）
     if (data.user) {
-      console.log('[ThaiShop] 建立使用者 profile, userId:', data.user.id);
-      const { error: profileError } = await _sbClient
-        .from('users')
-        .insert({
-          id: data.user.id,
-          email: email,
-          full_name: name,
-          phone: phone || ''
-        });
+      console.log('[ThaiShop] 註冊成功, userId:', data.user.id, '（profile 由 DB trigger 建立）');
+      // 備援：如果 trigger 沒建立 profile，前端嘗試建立
+      try {
+        const { data: existingProfile } = await _sbClient
+          .from('users')
+          .select('id')
+          .eq('id', data.user.id)
+          .single();
 
-      if (profileError && !profileError.message.includes('duplicate')) {
-        console.error('[ThaiShop] 建立使用者資料失敗:', profileError);
-        // 不阻擋註冊流程，Auth 已成功
+        if (!existingProfile) {
+          console.log('[ThaiShop] Trigger 未建立 profile，前端備援建立');
+          const { error: profileError } = await _sbClient
+            .from('users')
+            .insert({
+              id: data.user.id,
+              email: email,
+              full_name: name,
+              phone: phone || ''
+            });
+          if (profileError) {
+            console.warn('[ThaiShop] 備援建立 profile 失敗（可能由 RLS 或 trigger 衝突）:', profileError.message);
+          }
+        }
+      } catch (e) {
+        console.warn('[ThaiShop] profile 檢查異常:', e.message);
       }
     }
 
