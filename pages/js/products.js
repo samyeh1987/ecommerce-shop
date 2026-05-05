@@ -85,8 +85,13 @@ async function loadCategoryFilters() {
 
     try {
         if (typeof getCategories === 'function') {
-            const categories = await getCategories();
-            renderCategoryFilters(categories);
+            const result = await getCategories();
+            const categories = (result && result.success) ? result.data : (Array.isArray(result) ? result : null);
+            if (categories && categories.length > 0) {
+                renderCategoryFilters(categories);
+            } else {
+                renderStaticCategoryFilters();
+            }
         } else {
             // Fallback static categories
             renderStaticCategoryFilters();
@@ -225,9 +230,20 @@ async function loadProducts() {
         let result;
         if (typeof getProducts === 'function') {
             result = await getProducts(params);
-            allProducts = result.products || result || [];
-            renderProducts(allProducts);
-            renderPagination(result.total || allProducts.length);
+            if (result && result.success && result.data) {
+                allProducts = result.data.products || result.data;
+                renderProducts(allProducts);
+                renderPagination(result.data.total || allProducts.length);
+            } else if (Array.isArray(result)) {
+                allProducts = result;
+                renderProducts(allProducts);
+                renderPagination(allProducts.length);
+            } else {
+                // API error, fallback to mock
+                allProducts = getMockProducts();
+                renderProducts(allProducts);
+                renderPagination(allProducts.length);
+            }
         } else {
             // Mock data fallback
             allProducts = getMockProducts();
@@ -237,7 +253,7 @@ async function loadProducts() {
 
         // Update count display
         if (countEl) {
-            const total = result?.total || allProducts.length;
+            const total = (result && result.success && result.data) ? (result.data.total || allProducts.length) : allProducts.length;
             countEl.textContent = total;
         }
 

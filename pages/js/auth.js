@@ -17,11 +17,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function checkExistingAuth() {
-  var user = await getCurrentUser();
-  if (user) {
-    // Already logged in, redirect
-    var redirect = getRedirectUrl();
-    location.href = redirect;
+  try {
+    var userResult = await getCurrentUser();
+    var user = (userResult && userResult.success && userResult.data) ? userResult.data : null;
+    if (!user && userResult && userResult.id) user = userResult;
+    if (user) {
+      // Already logged in, redirect
+      var redirect = getRedirectUrl();
+      location.href = redirect;
+    }
+  } catch(e) {
+    // Not logged in, stay on page
   }
 }
 
@@ -120,8 +126,16 @@ async function handleLogin() {
   try {
     var result = await login(email, password);
 
-    if (result.error) {
-      showFieldError('loginGeneralError', getAuthErrorMessage(result.error.message));
+    // Handle wrapped response format {success, data, error}
+    var errorMsg = null;
+    if (result && result.success === false && result.error) {
+      errorMsg = result.error;
+    } else if (result && result.error) {
+      errorMsg = result.error.message || result.error;
+    }
+
+    if (errorMsg) {
+      showFieldError('loginGeneralError', getAuthErrorMessage(typeof errorMsg === 'string' ? errorMsg : errorMsg.message || 'Login failed'));
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = '<span class="lang-th">เข้าสู่ระบบ</span><span class="lang-en">Login</span><span class="lang-zh">登录</span>';
@@ -222,8 +236,16 @@ async function handleRegister() {
   try {
     var result = await register(email, password, name, phone);
 
-    if (result.error) {
-      showFieldError('registerGeneralError', getAuthErrorMessage(result.error.message));
+    // Handle wrapped response format {success, data, error}
+    var errorMsg = null;
+    if (result && result.success === false && result.error) {
+      errorMsg = result.error;
+    } else if (result && result.error) {
+      errorMsg = result.error.message || result.error;
+    }
+
+    if (errorMsg) {
+      showFieldError('registerGeneralError', getAuthErrorMessage(typeof errorMsg === 'string' ? errorMsg : errorMsg.message || 'Registration failed'));
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = '<span class="lang-th">สมัครสมาชิก</span><span class="lang-en">Register</span><span class="lang-zh">注册</span>';

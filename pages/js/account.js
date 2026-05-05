@@ -13,7 +13,15 @@ document.addEventListener('DOMContentLoaded', async function() {
   } catch(e) {}
 
   // Check login
-  currentUser = await getCurrentUser();
+  try {
+    var userResult = await getCurrentUser();
+    currentUser = (userResult && userResult.success && userResult.data) ? userResult.data : null;
+    if (!currentUser && userResult && userResult.id) {
+      currentUser = userResult;
+    }
+  } catch(e) {
+    currentUser = null;
+  }
 
   if (!currentUser) {
     showLoginPrompt();
@@ -73,7 +81,12 @@ async function loadOrders(filter) {
   if (!currentUser) return;
   if (filter) currentFilter = filter;
 
-  userOrders = await getOrders(currentUser.id, currentFilter);
+  try {
+    var result = await getOrders(currentUser.id, currentFilter);
+    userOrders = (result && result.success) ? result.data : (Array.isArray(result) ? result : []);
+  } catch(e) {
+    userOrders = [];
+  }
   renderOrders();
 }
 
@@ -173,7 +186,12 @@ function filterOrders(filter) {
 
 async function loadAddresses() {
   if (!currentUser) return;
-  userAddresses = await getAddresses(currentUser.id);
+  try {
+    var result = await getAddresses(currentUser.id);
+    userAddresses = (result && result.success) ? result.data : (Array.isArray(result) ? result : []);
+  } catch(e) {
+    userAddresses = [];
+  }
   renderAddresses();
 }
 

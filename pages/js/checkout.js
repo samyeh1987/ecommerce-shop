@@ -16,7 +16,15 @@ document.addEventListener('DOMContentLoaded', async function() {
   } catch(e) {}
 
   // Check login
-  currentUser = await getCurrentUser();
+  try {
+    var userResult = await getCurrentUser();
+    currentUser = (userResult && userResult.success && userResult.data) ? userResult.data : null;
+    if (!currentUser && userResult && userResult.id) {
+      currentUser = userResult;
+    }
+  } catch(e) {
+    currentUser = null;
+  }
   if (!currentUser) {
     location.href = '/login?redirect=/checkout';
     return;
@@ -36,7 +44,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 
   // Load cart items
-  var allCartItems = await getCartItems(currentUser.id);
+  var cartResult = await getCartItems(currentUser.id || currentUser);
+  var allCartItems = (cartResult && cartResult.success) ? cartResult.data : (Array.isArray(cartResult) ? cartResult : []);
   checkoutItems = allCartItems.filter(function(item) {
     return itemIds.indexOf(item.id) !== -1;
   });
@@ -60,7 +69,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 async function loadAddresses() {
-  savedAddresses = await getAddresses(currentUser.id);
+  try {
+    var addrResult = await getAddresses(currentUser.id || currentUser);
+    savedAddresses = (addrResult && addrResult.success) ? addrResult.data : (Array.isArray(addrResult) ? addrResult : []);
+  } catch(e) {
+    savedAddresses = [];
+  }
   renderAddressSelector();
 }
 

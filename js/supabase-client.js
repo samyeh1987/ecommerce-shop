@@ -187,8 +187,11 @@ function generateOrderNumber() {
  * @param {string} options.search - 搜尋關鍵字
  * @param {number} options.minPrice - 最低價格
  * @param {number} options.maxPrice - 最高價格
- * @param {string} options.sort - 排序方式 (newest, price_asc, price_desc, popular)
- * @returns {object} 統一回應格式
+ * @param {string} options.sort - 排序方式 (newest, price_asc, price_desc, popular, featured)
+ * @param {number} options.limit - 每頁數量
+ * @param {number} options.page - 頁碼
+ * @param {boolean} options.sale - 是否只查特價商品
+ * @returns {object} { success, data: { products, total } } 或 { success: false, error }
  */
 async function getProducts(options = {}) {
   if (!isSupabaseReady()) {
@@ -199,17 +202,23 @@ async function getProducts(options = {}) {
     let query = supabase
       .from('products')
       .select(`
-        *,
-        product_categories (id, name, slug)
-      `)
+        id, name, slug, description, price, sale_price, compare_price,
+        stock_quantity, category_id, images, is_active, is_featured,
+        average_rating, review_count,
+        name_th, name_en, name_zh,
+        description_th, description_en, description_zh,
+        sku, weight, created_at,
+        product_categories (id, name, slug, name_th, name_en, name_zh)
+      `, { count: 'exact' })
       .eq('is_active', true);
 
-    // 分類篩選
+    // 分類篩選（支援 UUID 或 slug）
     if (options.category) {
-      if (options.category.includes('-')) {
+      // 如果是 UUID 格式直接用，否則先查分類 ID
+      if (/^[0-9a-f]{8}-/i.test(options.category)) {
         query = query.eq('category_id', options.category);
-      } else {
-        // 假設傳入的是 slug，透過子查詢過濾
+      } else if (options.category.includes('-')) {
+        // slug 格式如 'health-beauty'
         const { data: cat } = await supabase
           .from('product_categories')
           .select('id')
@@ -218,12 +227,22 @@ async function getProducts(options = {}) {
         if (cat) {
           query = query.eq('category_id', cat.id);
         }
+      } else {
+        // 短名稱如 'beauty'，嘗試 slug 匹配
+        const { data: cat } = await supabase
+          .from('product_categories')
+          .select('id')
+          .or(`slug.ilike.%${options.category}%,name_en.ilike.%${options.category}%`)
+          .limit(1);
+        if (cat && cat.length > 0) {
+          query = query.eq('category_id', cat[0].id);
+        }
       }
     }
 
-    // 搜尋關鍵字
+    // 搜尋關鍵字（支援三語搜尋）
     if (options.search) {
-      query = query.or(`name.ilike.%${options.search}%,description.ilike.%${options.search}%`);
+      query = query.or(`name.ilike.%${options.search}%,name_th.ilike.%${options.search}%,name_en.ilike.%${options.search}%,name_zh.ilike.%${options.search}%,description.ilike.%${options.search}%`);
     }
 
     // 價格範圍
@@ -234,6 +253,16 @@ async function getProducts(options = {}) {
       query = query.lte('price', options.maxPrice);
     }
 
+    // 特價商品（sale_price 存在且小於 price）
+    if (options.sale) {
+      query = query.not('sale_price', 'is', null).lt('sale_price', supabase.rpc ? 999999 : 999999);
+    }
+
+    // 精選商品
+    if (options.sort === 'featured') {
+      query = query.eq('is_featured', true);
+    }
+
     // 排序
     switch (options.sort) {
       case 'price_asc':
@@ -242,19 +271,33 @@ async function getProducts(options = {}) {
       case 'price_desc':
         query = query.order('price', { ascending: false });
         break;
+      case 'popular':
+        query = query.order('average_rating', { ascending: false });
+        break;
+      case 'featured':
+        query = query.order('created_at', { ascending: false });
+        break;
       case 'newest':
       default:
         query = query.order('created_at', { ascending: false });
         break;
     }
 
-    const { data, error } = await query;
+    // 分頁
+    const limit = options.limit || 20;
+    const page = options.page || 1;
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to);
+
+    const { data, error, count } = await query;
 
     if (error) {
       return createResponse(false, null, parseSupabaseError(error, currentLang));
     }
 
-    return createResponse(true, data);
+    // 返回前端友好的格式
+    return createResponse(true, { products: data || [], total: count || 0 });
   } catch (err) {
     return createResponse(false, null, parseSupabaseError(err, currentLang));
   }
@@ -262,8 +305,8 @@ async function getProducts(options = {}) {
 
 /**
  * 取得單一商品
- * @param {string} id - 商品 ID
- * @returns {object} 統一回應格式
+ * @param {string} id - 商品 ID (UUID)
+ * @returns {object} { success, data: product } 或 { success: false, error }
  */
 async function getProductById(id) {
   if (!isSupabaseReady()) {
@@ -274,8 +317,13 @@ async function getProductById(id) {
     const { data, error } = await supabase
       .from('products')
       .select(`
-        *,
-        product_categories (id, name, slug, description)
+        id, name, slug, description, price, sale_price, compare_price,
+        stock_quantity, category_id, images, is_active, is_featured,
+        average_rating, review_count,
+        name_th, name_en, name_zh,
+        description_th, description_en, description_zh,
+        sku, weight, created_at,
+        product_categories (id, name, slug, name_th, name_en, name_zh, description)
       `)
       .eq('id', id)
       .single();
@@ -292,7 +340,7 @@ async function getProductById(id) {
 
 /**
  * 取得所有分類
- * @returns {object} 統一回應格式
+ * @returns {object} { success, data: categories } 或 { success: false, error }
  */
 async function getCategories() {
   if (!isSupabaseReady()) {
@@ -1073,13 +1121,39 @@ async function getActivePromotions() {
 }
 
 /**
- * 取得限時搶購商品
- * @returns {object} 統一回應格式
+ * 取得限時搶購商品（有特價的商品）
+ * @param {number} limit - 最多回傳幾個商品
+ * @returns {object} { success, data: products[] } 或 { success: false, error }
  */
-async function getFlashSaleProducts() {
-  // 目前資料庫沒有搶購表，回傳空陣列
-  // 未來可擴充
-  return createResponse(true, []);
+async function getFlashSaleProducts(limit = 6) {
+  if (!isSupabaseReady()) {
+    return createResponse(false, null, getErrorMessage('server', currentLang));
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        id, name, slug, price, sale_price, compare_price,
+        stock_quantity, category_id, images,
+        name_th, name_en, name_zh,
+        average_rating,
+        product_categories (id, name, slug, name_th, name_en, name_zh)
+      `)
+      .eq('is_active', true)
+      .not('sale_price', 'is', null)
+      .lt('sale_price', 999999)
+      .order('sale_price', { ascending: true })
+      .limit(limit);
+
+    if (error) {
+      return createResponse(false, null, parseSupabaseError(error, currentLang));
+    }
+
+    return createResponse(true, data || []);
+  } catch (err) {
+    return createResponse(false, null, parseSupabaseError(err, currentLang));
+  }
 }
 
 // ============================================================

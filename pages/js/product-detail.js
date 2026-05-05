@@ -30,7 +30,8 @@ async function loadProduct() {
         // Try to load from API
         let product;
         if (typeof getProductById === 'function') {
-            product = await getProductById(productId);
+            const result = await getProductById(productId);
+            product = (result && result.success) ? result.data : (result && !result.success ? null : result);
         } else {
             // Fallback mock data
             product = getMockProduct(productId);

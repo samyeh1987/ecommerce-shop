@@ -12,7 +12,17 @@ document.addEventListener('DOMContentLoaded', async function() {
   } catch(e) {}
 
   // Check login
-  currentUser = await getCurrentUser();
+  try {
+    var userResult = await getCurrentUser();
+    currentUser = (userResult && userResult.success && userResult.data) ? userResult.data : null;
+    // Also handle case where getCurrentUser returns user directly (non-wrapped)
+    if (!currentUser && userResult && userResult.id) {
+      currentUser = userResult;
+    }
+  } catch(e) {
+    currentUser = null;
+  }
+
   if (!currentUser) {
     showLoginPrompt();
     return;
@@ -47,7 +57,12 @@ function showLoginPrompt() {
 
 async function loadCartItems() {
   if (!currentUser) return;
-  cartItems = await getCartItems(currentUser.id);
+  try {
+    var result = await getCartItems(currentUser.id || currentUser);
+    cartItems = (result && result.success) ? result.data : (Array.isArray(result) ? result : []);
+  } catch(e) {
+    cartItems = [];
+  }
   selectedItems.clear();
 
   if (cartItems.length === 0) {

@@ -106,8 +106,13 @@ async function loadCategories() {
 
     try {
         if (typeof getCategories === 'function') {
-            const categories = await getCategories();
-            renderCategories(categories);
+            const result = await getCategories();
+            const categories = (result && result.success) ? result.data : (Array.isArray(result) ? result : null);
+            if (categories && categories.length > 0) {
+                renderCategories(categories);
+            } else {
+                renderCategories(MOCK_CATEGORIES);
+            }
         } else {
             // 使用 mock 資料
             renderCategories(MOCK_CATEGORIES);
@@ -172,8 +177,13 @@ async function loadFlashSale() {
 
     try {
         if (typeof getFlashSaleProducts === 'function') {
-            const products = await getFlashSaleProducts();
-            renderFlashSaleProducts(products);
+            const result = await getFlashSaleProducts();
+            const products = (result && result.success) ? result.data : (Array.isArray(result) ? result : null);
+            if (products && products.length > 0) {
+                renderFlashSaleProducts(products);
+            } else {
+                renderFlashSaleProducts(MOCK_PRODUCTS.slice(0, 5));
+            }
         } else {
             // 使用 mock 資料
             renderFlashSaleProducts(MOCK_PRODUCTS.slice(0, 5));
@@ -273,8 +283,18 @@ async function loadFeaturedProducts() {
 
     try {
         if (typeof getProducts === 'function') {
-            const products = await getProducts({ sort: 'featured', limit: 8 });
-            renderFeaturedProducts(products);
+            const result = await getProducts({ sort: 'featured', limit: 8 });
+            let products = null;
+            if (result && result.success && result.data) {
+                products = result.data.products || result.data;
+            } else if (Array.isArray(result)) {
+                products = result;
+            }
+            if (products && products.length > 0) {
+                renderFeaturedProducts(products);
+            } else {
+                renderFeaturedProducts(MOCK_PRODUCTS);
+            }
         } else {
             // 使用 mock 資料
             renderFeaturedProducts(MOCK_PRODUCTS);
