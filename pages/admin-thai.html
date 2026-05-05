@@ -58,10 +58,13 @@
                 </button>
             </nav>
             <div class="p-4 border-t border-white/10">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 mb-2">
                     <div class="w-9 h-9 bg-thai-gold rounded-full flex items-center justify-center text-sm font-bold text-thai-purple">A</div>
                     <div class="text-xs"><p class="font-semibold">Admin</p><p class="text-white/50">admin@thaishop.com</p></div>
                 </div>
+                <button onclick="adminLogout()" class="w-full text-left px-2 py-1.5 text-xs text-white/60 hover:text-white hover:bg-white/10 rounded transition">
+                    <span class="lang-th">🚪 ออกจากระบบ</span><span class="lang-en">🚪 Logout</span><span class="lang-zh">🚪 退出登录</span>
+                </button>
             </div>
         </aside>
 
@@ -84,6 +87,8 @@
                     <span class="text-gray-400">|</span>
                     <span class="text-sm text-gray-500">🔔</span>
                     <a href="index-thai.html" class="text-sm text-thai-purple hover:underline"><span class="lang-th">ดูร้าน</span><span class="lang-en">View Store</span><span class="lang-zh">查看商店</span></a>
+                    <span class="text-gray-400">|</span>
+                    <a href="#" onclick="adminLogout();return false;" class="text-sm text-red-500 hover:underline"><span class="lang-th">ออกจากระบบ</span><span class="lang-en">Logout</span><span class="lang-zh">退出</span></a>
                 </div>
             </header>
 
@@ -120,47 +125,16 @@
                         <!-- Revenue Chart -->
                         <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-5">
                             <h3 class="font-bold text-gray-800 mb-4"><span class="lang-th">📈 รายได้ 7 วันล่าสุด</span><span class="lang-en">📈 Revenue Last 7 Days</span><span class="lang-zh">📈 近7日收入</span></h3>
-                            <div class="flex items-end gap-2 h-48">
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="bg-thai-gold rounded-t w-full" style="height:60%"></div>
-                                    <span class="text-xs text-gray-500">Mon</span>
-                                </div>
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="bg-thai-gold rounded-t w-full" style="height:80%"></div>
-                                    <span class="text-xs text-gray-500">Tue</span>
-                                </div>
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="bg-thai-gold rounded-t w-full" style="height:45%"></div>
-                                    <span class="text-xs text-gray-500">Wed</span>
-                                </div>
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="bg-thai-gold rounded-t w-full" style="height:90%"></div>
-                                    <span class="text-xs text-gray-500">Thu</span>
-                                </div>
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="bg-thai-gold rounded-t w-full" style="height:70%"></div>
-                                    <span class="text-xs text-gray-500">Fri</span>
-                                </div>
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="bg-thai-red rounded-t w-full" style="height:95%"></div>
-                                    <span class="text-xs text-gray-500">Sat</span>
-                                </div>
-                                <div class="flex-1 flex flex-col items-center gap-1">
-                                    <div class="bg-thai-gold rounded-t w-full" style="height:75%"></div>
-                                    <span class="text-xs text-gray-500">Sun</span>
-                                </div>
+                            <div class="h-48">
+                                <canvas id="revenueChart"></canvas>
                             </div>
                         </div>
 
-                        <!-- Top Products -->
+                        <!-- Category Chart -->
                         <div class="bg-white rounded-xl shadow-sm p-5">
                             <h3 class="font-bold text-gray-800 mb-4"><span class="lang-th">🏆 สินค้าขายดี</span><span class="lang-en">🏆 Top Products</span><span class="lang-zh">🏆 热销商品</span></h3>
-                            <div class="space-y-3 text-sm">
-                                <div class="flex items-center gap-3"><span class="bg-thai-gold text-thai-purple w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span><span class="flex-1 truncate">Smartphone Pro Max</span><span class="text-gray-500">342</span></div>
-                                <div class="flex items-center gap-3"><span class="bg-gray-200 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span><span class="flex-1 truncate">Wireless Earbuds</span><span class="text-gray-500">289</span></div>
-                                <div class="flex items-center gap-3"><span class="bg-gray-200 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">3</span><span class="flex-1 truncate">Thai Green Tea</span><span class="text-gray-500">215</span></div>
-                                <div class="flex items-center gap-3"><span class="bg-gray-200 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">4</span><span class="flex-1 truncate">Skin Cream</span><span class="text-gray-500">198</span></div>
-                                <div class="flex items-center gap-3"><span class="bg-gray-200 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">5</span><span class="flex-1 truncate">Smart Watch</span><span class="text-gray-500">156</span></div>
+                            <div class="h-48">
+                                <canvas id="categoryChart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -190,10 +164,17 @@
                 <div id="sec-products" class="hidden">
                     <div class="flex flex-wrap justify-between items-center mb-4 gap-3">
                         <div class="flex gap-2 items-center">
-                            <input type="text" placeholder="Search..." class="border rounded-lg px-3 py-2 text-sm w-48 outline-none focus:border-thai-gold">
-                            <select class="border rounded-lg px-3 py-2 text-sm outline-none"><option><span class="lang-th">ทุกหมวดหมู่</span><span class="lang-en">All Categories</span><span class="lang-zh">全部分类</span></option><option>Electronics</option><option>Fashion</option></select>
+                            <input type="text" id="productSearchInput" placeholder="Search products..." class="border rounded-lg px-3 py-2 text-sm w-48 outline-none focus:border-thai-gold">
+                            <select id="productCategoryFilter" class="border rounded-lg px-3 py-2 text-sm outline-none">
+                                <option value=""><span class="lang-th">ทุกหมวดหมู่</span><span class="lang-en">All Categories</span><span class="lang-zh">全部分类</span></option>
+                                <option>Electronics</option>
+                                <option>Fashion</option>
+                                <option>Food</option>
+                                <option>Home</option>
+                                <option>Beauty</option>
+                            </select>
                         </div>
-                        <button class="bg-thai-gold text-thai-purple px-4 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition">+ <span class="lang-th">เพิ่มสินค้า</span><span class="lang-en">Add Product</span><span class="lang-zh">添加商品</span></button>
+                        <button onclick="openProductModal()" class="bg-thai-gold text-thai-purple px-4 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition">+ <span class="lang-th">เพิ่มสินค้า</span><span class="lang-en">Add Product</span><span class="lang-zh">添加商品</span></button>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                         <div class="overflow-x-auto">
@@ -213,21 +194,29 @@
                 <!-- ==================== ORDERS ==================== -->
                 <div id="sec-orders" class="hidden">
                     <div class="flex flex-wrap gap-2 mb-4">
-                        <button class="px-3 py-1.5 bg-thai-red text-white rounded-lg text-sm font-semibold">All</button>
-                        <button class="px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-lg text-sm font-semibold">Pending</button>
-                        <button class="px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-semibold">Paid</button>
-                        <button class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold">Shipped</button>
-                        <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-semibold">Delivered</button>
-                        <button class="px-3 py-1.5 bg-red-100 text-red-600 rounded-lg text-sm font-semibold">Cancelled</button>
+                        <button class="order-filter px-3 py-1.5 bg-thai-red text-white rounded-lg text-sm font-semibold" data-filter="all" onclick="filterOrders('all')">All</button>
+                        <button class="order-filter px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-semibold" data-filter="pending" onclick="filterOrders('pending')">
+                            <span class="lang-th">รอชำระ</span><span class="lang-en">Pending</span><span class="lang-zh">待付款</span>
+                        </button>
+                        <button class="order-filter px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-semibold" data-filter="paid" onclick="filterOrders('paid')">
+                            <span class="lang-th">ชำระแล้ว</span><span class="lang-en">Paid</span><span class="lang-zh">已付款</span>
+                        </button>
+                        <button class="order-filter px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-semibold" data-filter="shipped" onclick="filterOrders('shipped')">
+                            <span class="lang-th">จัดส่งแล้ว</span><span class="lang-en">Shipped</span><span class="lang-zh">已发货</span>
+                        </button>
+                        <button class="order-filter px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-semibold" data-filter="delivered" onclick="filterOrders('delivered')">
+                            <span class="lang-th">ส่งแล้ว</span><span class="lang-en">Delivered</span><span class="lang-zh">已送达</span>
+                        </button>
+                        <button class="order-filter px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-semibold" data-filter="cancelled" onclick="filterOrders('cancelled')">
+                            <span class="lang-th">ยกเลิก</span><span class="lang-en">Cancelled</span><span class="lang-zh">已取消</span>
+                        </button>
                     </div>
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm">
                                 <thead><tr class="text-left text-xs text-gray-500 border-b bg-gray-50"><th class="p-3">Order#</th><th class="p-3"><span class="lang-th">ลูกค้า</span><span class="lang-en">Customer</span><span class="lang-zh">客户</span></th><th class="p-3"><span class="lang-th">รายการ</span><span class="lang-en">Items</span><span class="lang-zh">商品</span></th><th class="p-3"><span class="lang-th">ยอดรวม</span><span class="lang-en">Total</span><span class="lang-zh">金额</span></th><th class="p-3"><span class="lang-th">สถานะ</span><span class="lang-en">Status</span><span class="lang-zh">状态</span></th><th class="p-3"><span class="lang-th">วันที่</span><span class="lang-en">Date</span><span class="lang-zh">日期</span></th><th class="p-3"><span class="lang-th">จัดการ</span><span class="lang-en">Actions</span><span class="lang-zh">操作</span></th></tr></thead>
                                 <tbody>
-                                    <tr class="border-b hover:bg-gray-50"><td class="p-3 font-semibold">#TH20260504001</td><td class="p-3">Somchai K.</td><td class="p-3">3</td><td class="p-3">฿17,660</td><td class="p-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">Paid</span></td><td class="p-3 text-gray-500">2026-05-04</td><td class="p-3"><button class="text-blue-500 hover:underline text-xs">View</button></td></tr>
-                                    <tr class="border-b hover:bg-gray-50"><td class="p-3 font-semibold">#TH20260503002</td><td class="p-3">Wichai P.</td><td class="p-3">1</td><td class="p-3">฿2,490</td><td class="p-3"><span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full">Pending</span></td><td class="p-3 text-gray-500">2026-05-03</td><td class="p-3"><button class="text-blue-500 hover:underline text-xs">View</button></td></tr>
-                                    <tr class="border-b hover:bg-gray-50"><td class="p-3 font-semibold">#TH20260502003</td><td class="p-3">Narisa S.</td><td class="p-3">2</td><td class="p-3">฿5,990</td><td class="p-3"><span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">Shipped</span></td><td class="p-3 text-gray-500">2026-05-02</td><td class="p-3"><button class="text-blue-500 hover:underline text-xs">View</button></td></tr>
+                                    <!-- Orders will be loaded dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -236,15 +225,13 @@
 
                 <!-- ==================== USERS ==================== -->
                 <div id="sec-users" class="hidden">
-                    <div class="flex gap-2 mb-4"><input type="text" placeholder="Search users..." class="border rounded-lg px-3 py-2 text-sm w-64 outline-none focus:border-thai-gold"></div>
+                    <div class="flex gap-2 mb-4"><input type="text" id="userSearchInput" placeholder="Search by email or phone..." class="border rounded-lg px-3 py-2 text-sm w-64 outline-none focus:border-thai-gold"></div>
                     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm">
                                 <thead><tr class="text-left text-xs text-gray-500 border-b bg-gray-50"><th class="p-3"><span class="lang-th">ผู้ใช้</span><span class="lang-en">User</span><span class="lang-zh">用户</span></th><th class="p-3">Email</th><th class="p-3"><span class="lang-th">โทร</span><span class="lang-en">Phone</span><span class="lang-zh">电话</span></th><th class="p-3"><span class="lang-th">คำสั่งซื้อ</span><span class="lang-en">Orders</span><span class="lang-zh">订单</span></th><th class="p-3"><span class="lang-th">ยอดซื้อรวม</span><span class="lang-en">Total Spent</span><span class="lang-zh">消费</span></th><th class="p-3"><span class="lang-th">วันสมัคร</span><span class="lang-en">Joined</span><span class="lang-zh">注册日期</span></th></tr></thead>
                                 <tbody>
-                                    <tr class="border-b hover:bg-gray-50"><td class="p-3 flex items-center gap-2"><div class="w-8 h-8 bg-thai-cream rounded-full flex items-center justify-center text-sm">😊</div><span class="font-semibold">Somchai K.</span></td><td class="p-3 text-gray-500">somchai@email.com</td><td class="p-3">08x-xxx-xx01</td><td class="p-3">12</td><td class="p-3 font-semibold">฿45,890</td><td class="p-3 text-gray-500">2025-12-01</td></tr>
-                                    <tr class="border-b hover:bg-gray-50"><td class="p-3 flex items-center gap-2"><div class="w-8 h-8 bg-pink-50 rounded-full flex items-center justify-center text-sm">😄</div><span class="font-semibold">Narisa S.</span></td><td class="p-3 text-gray-500">narisa@email.com</td><td class="p-3">08x-xxx-xx02</td><td class="p-3">8</td><td class="p-3 font-semibold">฿23,450</td><td class="p-3 text-gray-500">2026-01-15</td></tr>
-                                    <tr class="border-b hover:bg-gray-50"><td class="p-3 flex items-center gap-2"><div class="w-8 h-8 bg-sky-50 rounded-full flex items-center justify-center text-sm">😎</div><span class="font-semibold">Wichai P.</span></td><td class="p-3 text-gray-500">wichai@email.com</td><td class="p-3">08x-xxx-xx03</td><td class="p-3">5</td><td class="p-3 font-semibold">฿12,300</td><td class="p-3 text-gray-500">2026-02-20</td></tr>
+                                    <!-- Users will be loaded dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -295,7 +282,7 @@
                                 <div><label class="block text-gray-600 mb-1"><span class="lang-th">คำอธิบาย</span><span class="lang-en">Description</span><span class="lang-zh">描述</span></label><textarea class="w-full border rounded-lg px-3 py-2 outline-none focus:border-thai-gold" rows="2">Thailand's leading online shopping platform</textarea></div>
                                 <div><label class="block text-gray-600 mb-1"><span class="lang-th">โลโก้</span><span class="lang-en">Logo</span><span class="lang-zh">Logo</span></label><div class="border-2 border-dashed rounded-lg p-8 text-center text-gray-400 text-sm"><span class="lang-th">คลิกเพื่ออัพโหลด</span><span class="lang-en">Click to upload</span><span class="lang-zh">点击上传</span></div></div>
                             </div>
-                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
+                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition" onclick="saveSettings('general')"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
                         </div>
                         <!-- Payment -->
                         <div class="bg-white rounded-xl shadow-sm p-5">
@@ -305,7 +292,7 @@
                                 <label class="flex items-center justify-between p-3 border rounded-lg"><span class="text-sm font-semibold">💳 Credit/Debit Card</span><input type="checkbox" checked class="accent-thai-gold w-5 h-5"></label>
                                 <label class="flex items-center justify-between p-3 border rounded-lg"><span class="text-sm font-semibold">💵 Cash on Delivery</span><input type="checkbox" checked class="accent-thai-gold w-5 h-5"></label>
                             </div>
-                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
+                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition" onclick="saveSettings('payment')"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
                         </div>
                         <!-- Shipping -->
                         <div class="bg-white rounded-xl shadow-sm p-5">
@@ -315,7 +302,7 @@
                                 <div><label class="block text-gray-600 mb-1"><span class="lang-th">ค่าจัดส่งมาตรฐาน</span><span class="lang-en">Standard shipping rate</span><span class="lang-zh">标准运费</span></label><input type="number" value="50" class="w-32 border rounded-lg px-3 py-2 outline-none focus:border-thai-gold"> ฿</div>
                                 <div><label class="block text-gray-600 mb-1"><span class="lang-th">ค่าจัดส่งด่วน</span><span class="lang-en">Express shipping rate</span><span class="lang-zh">快递运费</span></label><input type="number" value="100" class="w-32 border rounded-lg px-3 py-2 outline-none focus:border-thai-gold"> ฿</div>
                             </div>
-                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
+                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition" onclick="saveSettings('shipping')"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
                         </div>
                         <!-- Language -->
                         <div class="bg-white rounded-xl shadow-sm p-5">
@@ -326,7 +313,17 @@
                                     <div class="flex gap-3"><label class="flex items-center gap-2"><input type="checkbox" checked class="accent-thai-gold"> ไทย</label><label class="flex items-center gap-2"><input type="checkbox" checked class="accent-thai-gold"> English</label><label class="flex items-center gap-2"><input type="checkbox" checked class="accent-thai-gold"> 中文</label></div>
                                 </div>
                             </div>
-                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
+                            <button class="mt-4 bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition" onclick="saveSettings('language')"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
+                        </div>
+                        <!-- Password Change -->
+                        <div class="bg-white rounded-xl shadow-sm p-5">
+                            <h3 class="font-bold text-gray-800 mb-4">🔑 <span class="lang-th">เปลี่ยนรหัสผ่าน</span><span class="lang-en">Change Password</span><span class="lang-zh">修改密码</span></h3>
+                            <div class="space-y-3 text-sm">
+                                <div><label class="block text-gray-600 mb-1"><span class="lang-th">รหัสผ่านเดิม</span><span class="lang-en">Current Password</span><span class="lang-zh">旧密码</span></label><input type="password" id="old-password" class="w-full border rounded-lg px-3 py-2 outline-none focus:border-thai-gold"></div>
+                                <div><label class="block text-gray-600 mb-1"><span class="lang-th">รหัสผ่านใหม่</span><span class="lang-en">New Password</span><span class="lang-zh">新密码</span></label><input type="password" id="new-password" class="w-full border rounded-lg px-3 py-2 outline-none focus:border-thai-gold"></div>
+                                <div><label class="block text-gray-600 mb-1"><span class="lang-th">ยืนยันรหัสผ่านใหม่</span><span class="lang-en">Confirm New Password</span><span class="lang-zh">确认新密码</span></label><input type="password" id="confirm-password" class="w-full border rounded-lg px-3 py-2 outline-none focus:border-thai-gold"></div>
+                            </div>
+                            <button class="mt-4 bg-thai-red text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition" onclick="changeAdminPassword()"><span class="lang-th">เปลี่ยนรหัสผ่าน</span><span class="lang-en">Change Password</span><span class="lang-zh">修改密码</span></button>
                         </div>
                     </div>
                 </div>
@@ -335,24 +332,12 @@
         </div>
     </div>
 
-    <script>
-        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
-        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
+    <!-- Product Modal is created dynamically by admin-thai.js -->
 
-        var sectionTitles={dashboard:'<span class="lang-th">แดชบอร์ด</span><span class="lang-en">Dashboard</span><span class="lang-zh">仪表盘</span>',products:'<span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品管理</span>',orders:'<span class="lang-th">คำสั่งซื้อ</span><span class="lang-en">Orders</span><span class="lang-zh">订单管理</span>',users:'<span class="lang-th">ผู้ใช้</span><span class="lang-en">Users</span><span class="lang-zh">用户管理</span>',finance:'<span class="lang-th">การเงิน</span><span class="lang-en">Finance</span><span class="lang-zh">财务管理</span>',settings:'<span class="lang-th">ตั้งค่า</span><span class="lang-en">Settings</span><span class="lang-zh">系统设置</span>'};
-
-        function showSection(name){
-            var secs=['dashboard','products','orders','users','finance','settings'];
-            secs.forEach(function(s){document.getElementById('sec-'+s).classList.toggle('hidden',s!==name)});
-            document.getElementById('pageTitle').innerHTML=sectionTitles[name];
-            document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active')});
-            document.querySelectorAll('.sidebar-link').forEach(function(l){
-                var txt=l.textContent.toLowerCase();
-                if(txt.indexOf(name.substring(0,4))!==-1)l.classList.add('active');
-            });
-            // Close mobile sidebar
-            if(window.innerWidth<1024)document.getElementById('sidebar').classList.add('closed');
-        }
-    </script>
+    <script src="../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/admin-thai.js"></script>
 </body>
 </html>

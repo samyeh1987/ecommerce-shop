@@ -67,7 +67,7 @@
         <span class="mx-2">›</span>
         <a href="products.html" class="hover:text-thai-red"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
         <span class="mx-2">›</span>
-        <span class="text-thai-purple font-semibold"><span class="lang-th">สมาร์ทโฟนรุ่นใหม่</span><span class="lang-en">Latest Smartphone</span><span class="lang-zh">最新智能手机</span></span>
+        <span id="breadcrumbProduct" class="text-thai-purple font-semibold"><span class="lang-th">สินค้า</span><span class="lang-en">Product</span><span class="lang-zh">商品</span></span>
     </div>
 
     <!-- Product Detail -->
@@ -76,24 +76,19 @@
             <!-- Image Gallery -->
             <div>
                 <div id="mainImage" class="bg-gradient-to-br from-thai-cream to-yellow-100 rounded-2xl aspect-square flex items-center justify-center text-9xl shadow-md">📱</div>
-                <div class="flex gap-3 mt-4">
-                    <div class="thumb-img active w-20 h-20 bg-gradient-to-br from-thai-cream to-yellow-100 rounded-lg flex items-center justify-center text-2xl cursor-pointer" onclick="selectThumb(this)">📱</div>
-                    <div class="thumb-img w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center text-2xl cursor-pointer" onclick="selectThumb(this)">📦</div>
-                    <div class="thumb-img w-20 h-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center text-2xl cursor-pointer" onclick="selectThumb(this)">🖼️</div>
-                    <div class="thumb-img w-20 h-20 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg flex items-center justify-center text-2xl cursor-pointer" onclick="selectThumb(this)">✨</div>
-                </div>
+                <div class="flex gap-3 mt-4" id="thumbnailContainer">
             </div>
 
             <!-- Product Info -->
             <div>
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-thai-red text-white text-xs px-2 py-0.5 rounded-full">
+                    <span id="discountBadge" class="bg-thai-red text-white text-xs px-2 py-0.5 rounded-full">
                         <span class="lang-th">ลด 19%</span><span class="lang-en">-19%</span><span class="lang-zh">降19%</span>
                     </span>
                     <span class="bg-thai-gold text-thai-purple text-xs px-2 py-0.5 rounded-full font-bold">🔥 Flash Sale</span>
                 </div>
-                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-                    <span class="lang-th">สมาร์ทโฟนรุ่นใหม่ Pro Max 256GB</span><span class="lang-en">Latest Smartphone Pro Max 256GB</span><span class="lang-zh">最新智能手机 Pro Max 256GB</span>
+                <h1 id="productTitle" class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                    <span class="lang-th">สินค้า</span><span class="lang-en">Product</span><span class="lang-zh">商品</span>
                 </h1>
                 <div class="flex items-center gap-3 mb-4 text-sm">
                     <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
@@ -102,11 +97,10 @@
                     <span class="text-gray-500"><span class="lang-th">ขายแล้ว 1.2k</span><span class="lang-en">1.2k sold</span><span class="lang-zh">已售 1.2k</span></span>
                 </div>
                 <div class="bg-red-50 border border-red-100 rounded-xl p-4 mb-6">
-                    <div class="flex items-baseline gap-3">
-                        <span class="text-3xl font-bold text-thai-red">฿12,990</span>
-                        <span class="text-lg text-gray-400 line-through">฿15,990</span>
+                    <div id="priceContainer" class="flex items-baseline gap-3">
+                        <span class="text-3xl font-bold text-thai-red">฿-</span>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">SKU: TH-SP-2024-001</p>
+                    <p id="productSku" class="text-xs text-gray-500 mt-1">SKU: -</p>
                 </div>
 
                 <!-- Color Selection -->
@@ -130,18 +124,28 @@
                 </div>
 
                 <!-- Quantity -->
-                <div class="mb-6">
-                    <h3 class="font-semibold text-gray-700 mb-2"><span class="lang-th">จำนวน</span><span class="lang-en">Quantity</span><span class="lang-zh">数量</span></h3>
-                    <div class="flex items-center border-2 rounded-lg w-fit overflow-hidden">
-                        <button onclick="changeQty(-1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-xl font-bold transition">−</button>
-                        <span id="qty" class="px-6 py-2 text-lg font-bold">1</span>
-                        <button onclick="changeQty(1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-xl font-bold transition">+</button>
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-gray-700"><span class="lang-th">จำนวน</span><span class="lang-en">Quantity</span><span class="lang-zh">数量</span></h3>
+                        <span id="stockBadge" class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                            <span class="lang-th">มีสินค้า</span><span class="lang-en">In Stock</span><span class="lang-zh">有货</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center border-2 rounded-lg overflow-hidden">
+                            <button onclick="changeQty(-1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-xl font-bold transition">−</button>
+                            <span id="qty" class="px-6 py-2 text-lg font-bold">1</span>
+                            <button onclick="changeQty(1)" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-xl font-bold transition">+</button>
+                        </div>
+                        <span id="stockStatus" class="text-sm text-gray-500">
+                            <span class="lang-th">พร้อมส่ง</span><span class="lang-en">Ready to ship</span><span class="lang-zh">随时发货</span>
+                        </span>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="flex gap-4 mb-6">
-                    <button onclick="addToCart()" class="flex-1 bg-thai-gold text-thai-purple py-3 rounded-xl font-bold text-lg hover:bg-thai-orange hover:text-white transition shadow-lg">
+                    <button id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-thai-gold text-thai-purple py-3 rounded-xl font-bold text-lg hover:bg-thai-orange hover:text-white transition shadow-lg cursor-pointer">
                         🛒 <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
                     </button>
                     <button onclick="location.href='checkout.html'" class="flex-1 bg-thai-red text-white py-3 rounded-xl font-bold text-lg hover:bg-red-700 transition shadow-lg">
@@ -244,23 +248,8 @@
             <h2 class="text-2xl font-bold text-thai-purple mb-6">
                 <span class="lang-th">สินค้าที่เกี่ยวข้อง</span><span class="lang-en">Related Products</span><span class="lang-zh">相关商品</span>
             </h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="location.href='product-detail.html'">
-                    <div class="aspect-square bg-gradient-to-br from-sky-50 to-blue-100 flex items-center justify-center text-4xl">🎧</div>
-                    <div class="p-3"><h3 class="font-semibold text-sm"><span class="lang-th">หูฟังไร้สาย</span><span class="lang-en">Wireless Earbuds</span><span class="lang-zh">无线耳机</span></h3><p class="text-thai-red font-bold mt-1">฿1,990</p></div>
-                </div>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="location.href='product-detail.html'">
-                    <div class="aspect-square bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center text-4xl">⌚</div>
-                    <div class="p-3"><h3 class="font-semibold text-sm"><span class="lang-th">สมาร์ทวอทช์</span><span class="lang-en">Smart Watch</span><span class="lang-zh">智能手表</span></h3><p class="text-thai-red font-bold mt-1">฿3,490</p></div>
-                </div>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="location.href='product-detail.html'">
-                    <div class="aspect-square bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center text-4xl">🔋</div>
-                    <div class="p-3"><h3 class="font-semibold text-sm"><span class="lang-th">แบตเตอรี่</span><span class="lang-en">Power Bank</span><span class="lang-zh">充电宝</span></h3><p class="text-thai-red font-bold mt-1">฿690</p></div>
-                </div>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition cursor-pointer" onclick="location.href='product-detail.html'">
-                    <div class="aspect-square bg-gradient-to-br from-violet-50 to-purple-100 flex items-center justify-center text-4xl">📱</div>
-                    <div class="p-3"><h3 class="font-semibold text-sm"><span class="lang-th">เคสโทรศัพท์</span><span class="lang-en">Phone Case</span><span class="lang-zh">手机壳</span></h3><p class="text-thai-red font-bold mt-1">฿290</p></div>
-                </div>
+            <div id="relatedProductsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Related products loaded dynamically -->
             </div>
         </div>
     </div>
@@ -276,14 +265,10 @@
         <div class="border-t border-white/20 text-center py-4 text-xs text-white/50">© 2026 ThaiShop. <span class="lang-th">สงวนลิขสิทธิ์</span><span class="lang-en">All rights reserved.</span><span class="lang-zh">版权所有</span></div>
     </footer>
 
-    <script>
-        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
-        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
-        var qty=1;
-        function changeQty(d){qty=Math.max(1,qty+d);document.getElementById('qty').textContent=qty}
-        function selectThumb(el){document.querySelectorAll('.thumb-img').forEach(function(t){t.classList.remove('active')});el.classList.add('active')}
-        function switchTab(t){document.getElementById('panelDesc').classList.toggle('hidden',t!=='desc');document.getElementById('panelReviews').classList.toggle('hidden',t!=='reviews');document.getElementById('tabDesc').classList.toggle('active',t==='desc');document.getElementById('tabDesc').classList.toggle('text-gray-500',t!=='desc');document.getElementById('tabReviews').classList.toggle('active',t==='reviews');document.getElementById('tabReviews').classList.toggle('text-gray-500',t!=='reviews')}
-        function addToCart(){var btn=document.querySelector('.bg-thai-gold');var orig=btn.innerHTML;btn.innerHTML='✅ <span class="lang-th">เพิ่มแล้ว!</span><span class="lang-en">Added!</span><span class="lang-zh">已添加!</span>';setTimeout(function(){btn.innerHTML=orig},1500)}
-    </script>
+    <!-- ===== Supabase & App Scripts ===== -->
+    <script src="../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="js/product-detail.js"></script>
 </body>
 </html>

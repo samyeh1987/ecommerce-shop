@@ -71,9 +71,7 @@
                     <button onclick="switchLang('en')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">EN</button>
                     <button onclick="switchLang('zh')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">中文</button>
                 </div>
-                <a href="cart.html" class="relative hover:text-thai-gold transition">
-                    🛒 <span class="absolute -top-2 -right-2 bg-thai-red text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-                </a>
+                <a href="cart.html" class="relative hover:text-thai-gold transition">🛒 <span class="cart-badge absolute -top-2 -right-2 bg-thai-red text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span></a>
                 <a href="login.html" class="hover:text-thai-gold transition">👤</a>
             </div>
         </div>
@@ -106,13 +104,8 @@
                         <h4 class="font-semibold text-gray-700 mb-2">
                             <span class="lang-th">หมวดหมู่</span><span class="lang-en">Category</span><span class="lang-zh">分类</span>
                         </h4>
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" class="accent-thai-red" checked> <span class="lang-th">อิเล็กทรอนิกส์</span><span class="lang-en">Electronics</span><span class="lang-zh">电子产品</span></label>
-                            <label class="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" class="accent-thai-red"> <span class="lang-th">แฟชั่น</span><span class="lang-en">Fashion</span><span class="lang-zh">时尚</span></label>
-                            <label class="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" class="accent-thai-red"> <span class="lang-th">อาหาร</span><span class="lang-en">Food & Beverage</span><span class="lang-zh">食品饮料</span></label>
-                            <label class="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" class="accent-thai-red"> <span class="lang-th">สุขภาพ</span><span class="lang-en">Health & Beauty</span><span class="lang-zh">健康美容</span></label>
-                            <label class="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" class="accent-thai-red"> <span class="lang-th">บ้าน</span><span class="lang-en">Home & Living</span><span class="lang-zh">家居生活</span></label>
-                        </div>
+                        <div id="categoryFilterList" class="space-y-2">
+                            <!-- Categories loaded dynamically -->
                     </div>
                     <!-- Price Range -->
                     <div class="mb-5">
@@ -120,9 +113,9 @@
                             <span class="lang-th">ช่วงราคา</span><span class="lang-en">Price Range</span><span class="lang-zh">价格范围</span>
                         </h4>
                         <div class="flex gap-2 items-center text-sm">
-                            <input type="number" placeholder="฿0" class="w-20 border rounded px-2 py-1 text-center focus:border-thai-gold outline-none">
+                            <input id="minPrice" type="number" placeholder="฿0" class="w-20 border rounded px-2 py-1 text-center focus:border-thai-gold outline-none">
                             <span>-</span>
-                            <input type="number" placeholder="฿9999" class="w-20 border rounded px-2 py-1 text-center focus:border-thai-gold outline-none">
+                            <input id="maxPrice" type="number" placeholder="฿9999" class="w-20 border rounded px-2 py-1 text-center focus:border-thai-gold outline-none">
                         </div>
                     </div>
                     <!-- Rating -->
@@ -136,7 +129,7 @@
                             <label class="flex items-center gap-2 cursor-pointer text-sm"><input type="radio" name="rating" class="accent-thai-red"> ⭐⭐⭐ &amp; up</label>
                         </div>
                     </div>
-                    <button class="w-full bg-thai-red text-white py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
+                    <button id="applyPriceFilter" class="w-full bg-thai-red text-white py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
                         <span class="lang-th">ใช้ตัวกรอง</span><span class="lang-en">Apply Filters</span><span class="lang-zh">应用筛选</span>
                     </button>
                 </div>
@@ -170,134 +163,26 @@
                 <!-- Sort Bar -->
                 <div class="flex flex-wrap items-center justify-between mb-4 gap-2">
                     <p class="text-gray-600 text-sm">
-                        <span class="lang-th">แสดง 24 สินค้า</span><span class="lang-en">Showing 24 products</span><span class="lang-zh">显示 24 个商品</span>
+                        <span class="lang-th">แสดง</span><span class="lang-en">Showing</span><span class="lang-zh">显示</span>
+                        <span id="productCount">0</span>
+                        <span class="lang-th">สินค้า</span><span class="lang-en">products</span><span class="lang-zh">个商品</span>
                     </p>
-                    <select class="border rounded-lg px-3 py-2 text-sm bg-white focus:border-thai-gold outline-none">
-                        <option><span class="lang-th">ใหม่ล่าสุด</span><span class="lang-en">Newest</span><span class="lang-zh">最新</span></option>
-                        <option><span class="lang-th">ราคา: ต่ำ → สูง</span><span class="lang-en">Price: Low → High</span><span class="lang-zh">价格：低→高</span></option>
-                        <option><span class="lang-th">ราคา: สูง → ต่ำ</span><span class="lang-en">Price: High → Low</span><span class="lang-zh">价格：高→低</span></option>
+                    <select id="sortSelect" class="border rounded-lg px-3 py-2 text-sm bg-white focus:border-thai-gold outline-none">
+                        <option value="newest"><span class="lang-th">ใหม่ล่าสุด</span><span class="lang-en">Newest</span><span class="lang-zh">最新</span></option>
+                        <option value="price_low"><span class="lang-th">ราคา: ต่ำ → สูง</span><span class="lang-en">Price: Low → High</span><span class="lang-zh">价格：低→高</span></option>
+                        <option value="price_high"><span class="lang-th">ราคา: สูง → ต่ำ</span><span class="lang-en">Price: High → Low</span><span class="lang-zh">价格：高→低</span></option>
+                        <option value="popular"><span class="lang-th">ยอดนิยม</span><span class="lang-en">Popular</span><span class="lang-zh">热门</span></option>
                     </select>
                 </div>
 
                 <!-- Products Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="productGrid">
-                    <!-- Product Card 1 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-thai-cream to-yellow-100 flex items-center justify-center text-5xl">📱</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">สมาร์ทโฟนรุ่นใหม่</span><span class="lang-en">Latest Smartphone</span><span class="lang-zh">最新智能手机</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿12,990</p>
-                            <p class="text-gray-400 text-xs line-through">฿15,990</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Product Card 2 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-pink-50 to-rose-100 flex items-center justify-center text-5xl">👟</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">รองเท้ากีฬา</span><span class="lang-en">Sport Shoes</span><span class="lang-zh">运动鞋</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿2,490</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Product Card 3 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center text-5xl">🍵</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">ชาเขียวไทย</span><span class="lang-en">Thai Green Tea</span><span class="lang-zh">泰式绿茶</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿199</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Product Card 4 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-purple-50 to-violet-100 flex items-center justify-center text-5xl">💆</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">ครีมบำรุงผิว</span><span class="lang-en">Skin Cream</span><span class="lang-zh">护肤霜</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿590</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Product Card 5 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center text-5xl">🪴</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">กระถางต้นไม้</span><span class="lang-en">Plant Pot</span><span class="lang-zh">花盆</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿350</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Product Card 6 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-sky-50 to-blue-100 flex items-center justify-center text-5xl">🎧</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">หูฟังไร้สาย</span><span class="lang-en">Wireless Earbuds</span><span class="lang-zh">无线耳机</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿1,990</p>
-                            <p class="text-gray-400 text-xs line-through">฿2,490</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Product Card 7 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-rose-50 to-pink-100 flex items-center justify-center text-5xl">👗</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">ชุดไทยสไตล์</span><span class="lang-en">Thai Style Dress</span><span class="lang-zh">泰式连衣裙</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿1,290</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Product Card 8 -->
-                    <div class="product-card bg-white rounded-xl overflow-hidden shadow-sm cursor-pointer" onclick="location.href='product-detail.html'">
-                        <div class="aspect-square bg-gradient-to-br from-lime-50 to-green-100 flex items-center justify-center text-5xl">🍜</div>
-                        <div class="p-3">
-                            <h3 class="font-semibold text-sm text-gray-800 line-clamp-2">
-                                <span class="lang-th">ซอสพริกไทย</span><span class="lang-en">Thai Chili Sauce</span><span class="lang-zh">泰式辣椒酱</span>
-                            </h3>
-                            <p class="text-thai-red font-bold mt-1">฿89</p>
-                            <button class="mt-2 w-full bg-thai-gold text-thai-purple py-1.5 rounded-lg text-xs font-bold hover:bg-thai-orange hover:text-white transition">
-                                <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
-                            </button>
-                        </div>
-                    </div>
+                    <!-- Products will be loaded dynamically -->
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex justify-center items-center gap-2 mt-8">
-                    <button class="px-3 py-2 rounded-lg bg-white border hover:border-thai-gold text-sm">‹</button>
-                    <button class="px-3 py-2 rounded-lg bg-thai-red text-white text-sm font-bold">1</button>
-                    <button class="px-3 py-2 rounded-lg bg-white border hover:border-thai-gold text-sm">2</button>
-                    <button class="px-3 py-2 rounded-lg bg-white border hover:border-thai-gold text-sm">3</button>
-                    <span class="text-gray-400">...</span>
-                    <button class="px-3 py-2 rounded-lg bg-white border hover:border-thai-gold text-sm">10</button>
-                    <button class="px-3 py-2 rounded-lg bg-white border hover:border-thai-gold text-sm">›</button>
+                <div id="pagination" class="flex justify-center items-center gap-2 mt-8">
+                    <!-- Pagination rendered dynamically -->
                 </div>
             </div>
         </div>
@@ -363,5 +248,11 @@
             if (saved) switchLang(saved);
         } catch(e) {}
     </script>
+
+    <!-- ===== Supabase & App Scripts ===== -->
+    <script src="../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="js/products.js"></script>
 </body>
 </html>

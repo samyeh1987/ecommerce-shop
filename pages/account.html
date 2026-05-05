@@ -59,7 +59,24 @@
             <span class="lang-th">👤 บัญชีของฉัน</span><span class="lang-en">👤 My Account</span><span class="lang-zh">👤 我的账户</span>
         </h1>
 
-        <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Login Prompt (shown when not logged in) -->
+        <div id="loginPrompt" class="hidden">
+            <div class="flex flex-col items-center justify-center py-20">
+                <div class="text-6xl mb-6">🔒</div>
+                <h2 class="text-xl font-bold text-gray-700 mb-2">
+                    <span class="lang-th">กรุณาเข้าสู่ระบบ</span><span class="lang-en">Please login</span><span class="lang-zh">请登录</span>
+                </h2>
+                <p class="text-gray-500 mb-6 text-sm">
+                    <span class="lang-th">เข้าสู่ระบบเพื่อจัดการบัญชีของคุณ</span><span class="lang-en">Login to manage your account</span><span class="lang-zh">登录后即可管理您的账户</span>
+                </p>
+                <a href="login.html?redirect=account.html" class="bg-thai-red text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 transition">
+                    <span class="lang-th">เข้าสู่ระบบเลย</span><span class="lang-en">Login Now</span><span class="lang-zh">立即登录</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Account Content (shown when logged in) -->
+        <div id="accountContent" class="flex flex-col lg:flex-row gap-6">
             <!-- Sidebar -->
             <div class="lg:w-56 flex-shrink-0">
                 <!-- Mobile Tabs -->
@@ -76,7 +93,7 @@
                     <button onclick="switchSection('addresses')" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold">📍 <span class="lang-th">ที่อยู่</span><span class="lang-en">Addresses</span><span class="lang-zh">地址</span></button>
                     <button onclick="switchSection('wishlist')" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold">❤️ <span class="lang-th">รายการถูกใจ</span><span class="lang-en">Wishlist</span><span class="lang-zh">收藏</span></button>
                     <hr>
-                    <button onclick="location.href='login.html'" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold text-red-500">🚪 <span class="lang-th">ออกจากระบบ</span><span class="lang-en">Logout</span><span class="lang-zh">退出登录</span></button>
+                    <button onclick="handleLogout()" id="logoutBtn" class="sidebar-btn w-full text-left px-4 py-2.5 text-sm font-semibold text-red-500">🚪 <span class="lang-th">ออกจากระบบ</span><span class="lang-en">Logout</span><span class="lang-zh">退出登录</span></button>
                 </div>
             </div>
 
@@ -87,9 +104,9 @@
                     <div class="flex items-center gap-4 mb-6">
                         <div class="w-20 h-20 bg-gradient-to-br from-thai-gold to-thai-orange rounded-full flex items-center justify-center text-3xl">😊</div>
                         <div>
-                            <h2 class="text-xl font-bold text-gray-800">Somchai Jaidee</h2>
-                            <p class="text-gray-500 text-sm">somchai@email.com</p>
-                            <p class="text-gray-500 text-sm">08x-xxx-xxxx</p>
+                            <h2 class="text-xl font-bold text-gray-800" id="profileName">Somchai Jaidee</h2>
+                            <p class="text-gray-500 text-sm" id="profileEmail">somchai@email.com</p>
+                            <p class="text-gray-500 text-sm" id="profilePhone">08x-xxx-xxxx</p>
                         </div>
                         <button class="ml-auto bg-thai-cream text-thai-purple px-4 py-2 rounded-lg text-sm font-semibold hover:bg-thai-gold transition">
                             <span class="lang-th">แก้ไข</span><span class="lang-en">Edit</span><span class="lang-zh">编辑</span>
@@ -117,40 +134,21 @@
 
                 <!-- Orders Section -->
                 <div id="sectionOrders" class="bg-white rounded-xl shadow-md p-6 hidden">
-                    <h2 class="text-lg font-bold text-thai-purple mb-4"><span class="lang-th">📦 คำสั่งซื้อของฉัน</span><span class="lang-en">📦 My Orders</span><span class="lang-zh">📦 我的订单</span></h2>
-                    <div class="space-y-3">
-                        <div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer" onclick="location.href='order-detail.html'">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-bold text-sm">#TH20260504001</span>
-                                    <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-semibold"><span class="lang-th">ชำระแล้ว</span><span class="lang-en">Paid</span><span class="lang-zh">已付款</span></span>
-                                </div>
-                                <p class="text-xs text-gray-500">2026-05-04 | 3 <span class="lang-th">รายการ</span><span class="lang-en">items</span><span class="lang-zh">件</span></p>
-                            </div>
-                            <span class="font-bold text-thai-red">฿17,660</span>
-                            <span class="text-gray-400">›</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-3">
+                        <h2 class="text-lg font-bold text-thai-purple"><span class="lang-th">📦 คำสั่งซื้อของฉัน</span><span class="lang-en">📦 My Orders</span><span class="lang-zh">📦 我的订单</span></h2>
+                        <!-- Filter buttons -->
+                        <div class="flex gap-1 text-xs">
+                            <button id="filter-all" onclick="filterOrders('all')" class="order-filter-btn active bg-thai-red text-white px-3 py-1 rounded font-semibold"><span class="lang-th">ทั้งหมด</span><span class="lang-en">All</span><span class="lang-zh">全部</span></button>
+                            <button id="filter-pending" onclick="filterOrders('pending')" class="order-filter-btn bg-gray-100 text-gray-600 px-3 py-1 rounded font-semibold"><span class="lang-th">รอชำระ</span><span class="lang-en">Pending</span><span class="lang-zh">待处理</span></button>
+                            <button id="filter-paid" onclick="filterOrders('paid')" class="order-filter-btn bg-gray-100 text-gray-600 px-3 py-1 rounded font-semibold"><span class="lang-th">ชำระแล้ว</span><span class="lang-en">Paid</span><span class="lang-zh">已付款</span></button>
+                            <button id="filter-completed" onclick="filterOrders('completed')" class="order-filter-btn bg-gray-100 text-gray-600 px-3 py-1 rounded font-semibold"><span class="lang-th">เสร็จสมบูรณ์</span><span class="lang-en">Completed</span><span class="lang-zh">已完成</span></button>
                         </div>
-                        <div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer" onclick="location.href='order-detail.html'">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-bold text-sm">#TH20260428002</span>
-                                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-semibold"><span class="lang-th">จัดส่งแล้ว</span><span class="lang-en">Shipped</span><span class="lang-zh">已发货</span></span>
-                                </div>
-                                <p class="text-xs text-gray-500">2026-04-28 | 1 <span class="lang-th">รายการ</span><span class="lang-en">item</span><span class="lang-zh">件</span></p>
-                            </div>
-                            <span class="font-bold text-thai-red">฿2,490</span>
-                            <span class="text-gray-400">›</span>
-                        </div>
-                        <div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="font-bold text-sm">#TH20260420003</span>
-                                    <span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full font-semibold"><span class="lang-th">จัดส่งแล้ว</span><span class="lang-en">Delivered</span><span class="lang-zh">已送达</span></span>
-                                </div>
-                                <p class="text-xs text-gray-500">2026-04-20 | 2 <span class="lang-th">รายการ</span><span class="lang-en">items</span><span class="lang-zh">件</span></p>
-                            </div>
-                            <span class="font-bold text-thai-red">฿5,490</span>
-                            <span class="text-gray-400">›</span>
+                    </div>
+                    <div class="space-y-3" id="ordersList">
+                        <!-- Orders loaded dynamically -->
+                        <div class="text-center py-10 text-gray-400">
+                            <div class="text-4xl mb-3">⏳</div>
+                            <p><span class="lang-th">กำลังโหลด...</span><span class="lang-en">Loading...</span><span class="lang-zh">加载中...</span></p>
                         </div>
                     </div>
                 </div>
@@ -159,27 +157,64 @@
                 <div id="sectionAddresses" class="bg-white rounded-xl shadow-md p-6 hidden">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-lg font-bold text-thai-purple"><span class="lang-th">📍 ที่อยู่ของฉัน</span><span class="lang-en">📍 My Addresses</span><span class="lang-zh">📍 我的地址</span></h2>
-                        <button class="bg-thai-red text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition">+ <span class="lang-th">เพิ่ม</span><span class="lang-en">Add</span><span class="lang-zh">添加</span></button>
+                        <button onclick="showAddAddressForm()" class="bg-thai-red text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition">+ <span class="lang-th">เพิ่ม</span><span class="lang-en">Add</span><span class="lang-zh">添加</span></button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="border-2 border-thai-gold rounded-xl p-4 relative">
-                            <span class="absolute top-2 right-2 bg-thai-gold text-thai-purple text-xs px-2 py-0.5 rounded font-bold"><span class="lang-th">ค่าเริ่มต้น</span><span class="lang-en">Default</span><span class="lang-zh">默认</span></span>
-                            <p class="font-semibold text-sm">สมชาย ใจดี</p>
-                            <p class="text-xs text-gray-500">08x-xxx-xxxx</p>
-                            <p class="text-xs text-gray-600 mt-1">123 ซอยสุขุมวิท 101/1 แขวงคลองตัน เขตวัฒนา กรุงเทพฯ 10110</p>
-                            <div class="flex gap-2 mt-3">
-                                <button class="text-xs text-thai-red hover:underline"><span class="lang-th">แก้ไข</span><span class="lang-en">Edit</span><span class="lang-zh">编辑</span></button>
-                                <button class="text-xs text-gray-400 hover:underline"><span class="lang-th">ลบ</span><span class="lang-en">Delete</span><span class="lang-zh">删除</span></button>
+
+                    <!-- Address error message -->
+                    <div id="addressError" class="hidden bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-2 rounded-xl mb-4"></div>
+
+                    <!-- Addresses list -->
+                    <div id="addressesList">
+                        <!-- Loaded dynamically -->
+                        <div class="text-center py-10 text-gray-400">
+                            <div class="text-4xl mb-3">⏳</div>
+                            <p><span class="lang-th">กำลังโหลด...</span><span class="lang-en">Loading...</span><span class="lang-zh">加载中...</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Add Address Form (hidden by default) -->
+                    <div id="addAddressForm" class="hidden mt-6 bg-thai-cream rounded-xl p-6">
+                        <h3 class="font-bold text-sm mb-4"><span class="lang-th">+ เพิ่มที่อยู่ใหม่</span><span class="lang-en">+ Add New Address</span><span class="lang-zh">+ 添加新地址</span></h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">ชื่อผู้รับ</span><span class="lang-en">Recipient Name</span><span class="lang-zh">收件人</span></label>
+                                <input type="text" id="newRecipientName" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="สมชาย ใจดี">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">เบอร์โทร</span><span class="lang-en">Phone</span><span class="lang-zh">电话</span></label>
+                                <input type="tel" id="newPhone" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="08x-xxx-xxxx">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">จังหวัด</span><span class="lang-en">Province</span><span class="lang-zh">省/府</span></label>
+                                <input type="text" id="newProvince" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="กรุงเทพมหานคร">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">อำเภอ/เขต</span><span class="lang-en">District</span><span class="lang-zh">区</span></label>
+                                <input type="text" id="newDistrict" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="เขต/อำเภอ">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">ตำบล</span><span class="lang-en">Sub-district</span><span class="lang-zh">街道</span></label>
+                                <input type="text" id="newSubdistrict" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="ตำบล/แขวง">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">รหัสไปรษณีย์</span><span class="lang-en">Postal Code</span><span class="lang-zh">邮编</span></label>
+                                <input type="text" id="newPostalCode" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="10110" maxlength="5">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">ที่อยู่เต็ม</span><span class="lang-en">Detail Address</span><span class="lang-zh">详细地址</span></label>
+                                <textarea id="newDetailAddress" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" rows="2" placeholder="บ้านเลขที่ ซอย ถนน"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">ประเภท</span><span class="lang-en">Type</span><span class="lang-zh">类型</span></label>
+                                <select id="newAddressType" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm bg-white">
+                                    <option value="home"><span class="lang-th">บ้าน</span><span class="lang-en">Home</span><span class="lang-zh">家</span></option>
+                                    <option value="office"><span class="lang-th">สำนักงาน</span><span class="lang-en">Office</span><span class="lang-zh">办公室</span></option>
+                                </select>
                             </div>
                         </div>
-                        <div class="border rounded-xl p-4">
-                            <p class="font-semibold text-sm">สมชาย ใจดี</p>
-                            <p class="text-xs text-gray-500">089-xxx-xxxx</p>
-                            <p class="text-xs text-gray-600 mt-1">456 ถ.เพชรเกษม ต.ป่าคันจู อ.หาดใหญ่ สงขลา 90110</p>
-                            <div class="flex gap-2 mt-3">
-                                <button class="text-xs text-thai-red hover:underline"><span class="lang-th">แก้ไข</span><span class="lang-en">Edit</span><span class="lang-zh">编辑</span></button>
-                                <button class="text-xs text-gray-400 hover:underline"><span class="lang-th">ลบ</span><span class="lang-en">Delete</span><span class="lang-zh">删除</span></button>
-                            </div>
+                        <div class="flex gap-3 mt-4">
+                            <button onclick="saveNewAddress()" class="bg-thai-red text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-red-700 transition"><span class="lang-th">บันทึก</span><span class="lang-en">Save</span><span class="lang-zh">保存</span></button>
+                            <button onclick="cancelAddAddress()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-bold text-sm hover:bg-gray-300 transition"><span class="lang-th">ยกเลิก</span><span class="lang-en">Cancel</span><span class="lang-zh">取消</span></button>
                         </div>
                     </div>
                 </div>
@@ -218,17 +253,9 @@
         </div>
     </div>
 
-    <script>
-        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
-        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
-        function switchSection(name){
-            var sections=['Profile','Orders','Addresses','Wishlist'];
-            sections.forEach(function(s){document.getElementById('section'+s).classList.toggle('hidden',s.toLowerCase()!==name)});
-            document.querySelectorAll('.sidebar-btn').forEach(function(b){b.classList.remove('active')});
-            document.querySelectorAll('.sidebar-btn').forEach(function(b){
-                if(b.textContent.toLowerCase().indexOf(name.substring(0,3))!==-1)b.classList.add('active');
-            });
-        }
-    </script>
+    <script src="../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="js/account.js"></script>
 </body>
 </html>

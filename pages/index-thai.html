@@ -313,7 +313,7 @@
             <span class="lang-en">Explore Thailand's most popular product categories</span>
             <span class="lang-th">สำรวจหมวดหมสินค้ายอดนิยมในไทย</span>
         </p>
-        <div class="grid grid-cols-3 md:grid-cols-6 gap-6 text-center">
+        <div id="category-grid" class="grid grid-cols-3 md:grid-cols-6 gap-6 text-center">
             <div class="cursor-pointer">
                 <div class="cat-icon" style="background: linear-gradient(135deg, #FFE0EC, #FFC0D8);">💄</div>
                 <div class="text-sm font-semibold text-gray-700">
@@ -380,8 +380,8 @@
                     <span id="flashH">01</span>:<span id="flashM">28</span>:<span id="flashS">45</span>
                 </div>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                <!-- 单品卡片 -->
+            <div id="flash-sale-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <!-- Flash sale cards will be loaded dynamically -->
                 <div class="product-card-thai cursor-pointer">
                     <div class="h-44 bg-gray-100 flex items-center justify-center text-6xl">💄</div>
                     <div class="p-3">
@@ -489,8 +489,8 @@
             <span class="lang-en">🔥 Best Sellers</span>
             <span class="lang-th">🔥 สินค้าขายดี</span>
         </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div class="product-card-thai cursor-pointer">
+        <div id="featured-grid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <!-- Featured products will be loaded dynamically -->
                 <div class="h-52 bg-gradient-to-br from-pink-100 to-yellow-100 flex items-center justify-center text-7xl">🧴</div>
                 <div class="p-4">
                     <div class="text-sm font-semibold text-gray-800 line-clamp-2 mb-2">
@@ -728,5 +728,11 @@
             if (menu) menu.classList.toggle('hidden');
         }
     </script>
+
+    <!-- ===== Supabase & App Scripts ===== -->
+    <script src="../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="js/index-thai.js"></script>
 </body>
 </html>

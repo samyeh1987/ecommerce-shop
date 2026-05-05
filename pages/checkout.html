@@ -91,18 +91,21 @@
                     <h2 class="text-xl font-bold text-thai-purple mb-4">
                         <span class="lang-th">📍 ที่อยู่จัดส่ง</span><span class="lang-en">📍 Shipping Address</span><span class="lang-zh">📍 收货地址</span>
                     </h2>
+                    <!-- Saved addresses -->
+                    <div id="savedAddressList"></div>
+                    <!-- Address form -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">ชื่อผู้รับ</span><span class="lang-en">Recipient Name</span><span class="lang-zh">收件人</span></label>
-                            <input type="text" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="สมชาย ใจดี">
+                            <input type="text" id="recipientName" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="สมชาย ใจดี">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">เบอร์โทร</span><span class="lang-en">Phone</span><span class="lang-zh">电话</span></label>
-                            <input type="tel" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="08x-xxx-xxxx">
+                            <input type="tel" id="recipientPhone" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="08x-xxx-xxxx">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">จังหวัด</span><span class="lang-en">Province</span><span class="lang-zh">省/府</span></label>
-                            <select class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm bg-white">
+                            <select id="provinceSelect" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm bg-white">
                                 <option>กรุงเทพมหานคร / Bangkok</option>
                                 <option>เชียงใหม่ / Chiang Mai</option>
                                 <option>ภูเก็ต / Phuket</option>
@@ -111,23 +114,25 @@
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">อำเภอ/เขต</span><span class="lang-en">District</span><span class="lang-zh">区</span></label>
-                            <input type="text" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="เขต/อำเภอ">
+                            <input type="text" id="districtInput" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="เขต/อำเภอ">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">ตำบล</span><span class="lang-en">Sub-district</span><span class="lang-zh">街道</span></label>
-                            <input type="text" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="ตำบล/แขวง">
+                            <input type="text" id="subdistrictInput" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="ตำบล/แขวง">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">รหัสไปรษณีย์</span><span class="lang-en">Postal Code</span><span class="lang-zh">邮编</span></label>
-                            <input type="text" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="10100" maxlength="5">
+                            <input type="text" id="postalCode" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" placeholder="10100" maxlength="5">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-semibold text-gray-700 mb-1"><span class="lang-th">ที่อยู่เต็ม</span><span class="lang-en">Detail Address</span><span class="lang-zh">详细地址</span></label>
-                            <textarea class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" rows="2" placeholder="บ้านเลขที่ ซอย ถนน"></textarea>
+                            <textarea id="detailAddress" class="form-input w-full border-2 rounded-xl px-4 py-2.5 outline-none text-sm" rows="2" placeholder="บ้านเลขที่ ซอย ถนน"></textarea>
                         </div>
                     </div>
+                    <!-- Validation error -->
+                    <div id="step1Error" class="hidden text-red-500 text-sm mt-2 font-semibold"></div>
                     <label class="flex items-center gap-2 mt-3 text-sm cursor-pointer">
-                        <input type="checkbox" class="accent-thai-red">
+                        <input type="checkbox" id="saveAddressCheck" class="accent-thai-red">
                         <span class="lang-th">บันทึกเป็นที่อยู่เริ่มต้น</span><span class="lang-en">Save as default address</span><span class="lang-zh">保存为默认地址</span>
                     </label>
                     <button onclick="goStep(2)" class="mt-4 bg-thai-red text-white px-8 py-2.5 rounded-xl font-bold hover:bg-red-700 transition">
@@ -191,7 +196,7 @@
                             </div>
                             <div id="promptpaySection" class="bg-thai-cream rounded-lg p-4 text-center">
                                 <p class="text-sm text-gray-600 mb-2"><span class="lang-th">สแกน QR Code เพื่อชำระเงิน</span><span class="lang-en">Scan QR Code to pay</span><span class="lang-zh">扫描二维码支付</span></p>
-                                <div class="w-40 h-40 bg-white rounded-xl mx-auto flex items-center justify-center text-6xl border-2 border-dashed border-thai-gold">📋</div>
+                                <div id="promptpayQR" class="w-40 h-40 bg-white rounded-xl mx-auto flex items-center justify-center text-6xl border-2 border-dashed border-thai-gold">📋</div>
                                 <p class="text-xs text-gray-500 mt-2"><span class="lang-th">Ref: TH20260504001</span><span class="lang-en">Ref: TH20260504001</span><span class="lang-zh">参考号: TH20260504001</span></p>
                             </div>
                         </div>
@@ -237,34 +242,31 @@
                     <h2 class="text-xl font-bold text-thai-purple mb-4">
                         <span class="lang-th">✅ ยืนยันคำสั่งซื้อ</span><span class="lang-en">✅ Confirm Order</span><span class="lang-zh">✅ 确认订单</span>
                     </h2>
+                    <!-- Order error -->
+                    <div id="orderError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm font-semibold"></div>
                     <div class="space-y-4">
                         <div class="bg-thai-cream rounded-xl p-4">
                             <h3 class="font-bold text-sm mb-2"><span class="lang-th">📍 ที่อยู่จัดส่ง</span><span class="lang-en">📍 Shipping Address</span><span class="lang-zh">📍 收货地址</span></h3>
-                            <p class="text-sm text-gray-600">สมชาย ใจดี | 08x-xxx-xxxx</p>
-                            <p class="text-sm text-gray-600">123 ซอยสุขุมวิท 101/1 แขวงคลองตัน เขตวัฒนา กรุงเทพฯ 10110</p>
+                            <div id="confirmAddress"></div>
                         </div>
                         <div class="bg-thai-cream rounded-xl p-4">
                             <h3 class="font-bold text-sm mb-2"><span class="lang-th">🚚 วิธีจัดส่ง</span><span class="lang-en">🚚 Shipping</span><span class="lang-zh">🚚 配送</span></h3>
-                            <p class="text-sm text-gray-600"><span class="lang-th">มาตรฐาน (3-5 วัน)</span><span class="lang-en">Standard (3-5 days)</span><span class="lang-zh">标准配送 (3-5天)</span> — ฿50</p>
+                            <div id="confirmShipping"></div>
                         </div>
                         <div class="bg-thai-cream rounded-xl p-4">
                             <h3 class="font-bold text-sm mb-2"><span class="lang-th">💳 วิธีชำระเงิน</span><span class="lang-en">💳 Payment</span><span class="lang-zh">💳 支付</span></h3>
-                            <p class="text-sm text-gray-600">📱 PromptPay</p>
+                            <div id="confirmPayment"></div>
                         </div>
                         <div class="bg-thai-cream rounded-xl p-4">
                             <h3 class="font-bold text-sm mb-2"><span class="lang-th">📦 สินค้า</span><span class="lang-en">📦 Items</span><span class="lang-zh">📦 商品</span></h3>
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between"><span>📱 Smartphone Pro Max x1</span><span>฿12,990</span></div>
-                                <div class="flex justify-between"><span>🎧 Wireless Earbuds x2</span><span>฿3,980</span></div>
-                                <div class="flex justify-between"><span>🔋 Power Bank x1</span><span>฿690</span></div>
-                            </div>
+                            <div id="confirmItems" class="space-y-2"></div>
                         </div>
                     </div>
                     <div class="flex gap-3 mt-4">
                         <button onclick="goStep(3)" class="bg-gray-200 text-gray-700 px-6 py-2.5 rounded-xl font-bold hover:bg-gray-300 transition">
                             <span class="lang-th">← กลับ</span><span class="lang-en">← Back</span><span class="lang-zh">← 返回</span>
                         </button>
-                        <button onclick="placeOrder()" class="bg-thai-gold text-thai-purple px-8 py-3 rounded-xl font-bold text-lg hover:bg-thai-orange hover:text-white transition shadow-lg">
+                        <button onclick="placeOrder()" id="placeOrderBtn" class="bg-thai-gold text-thai-purple px-8 py-3 rounded-xl font-bold text-lg hover:bg-thai-orange hover:text-white transition shadow-lg">
                             🛒 <span class="lang-th">ยืนยันสั่งซื้อ</span><span class="lang-en">Place Order</span><span class="lang-zh">提交订单</span>
                         </button>
                     </div>
@@ -277,42 +279,22 @@
                     <h3 class="font-bold text-thai-purple mb-3">
                         <span class="lang-th">สรุปคำสั่งซื้อ</span><span class="lang-en">Order Summary</span><span class="lang-zh">订单摘要</span>
                     </h3>
+                    <!-- Checkout items -->
+                    <div id="orderItemsSummary" class="mb-3 max-h-60 overflow-y-auto"></div>
                     <div class="space-y-2 text-sm">
-                        <div class="flex justify-between"><span class="text-gray-600"><span class="lang-th">ยอดรวม (4 ชิ้น)</span><span class="lang-en">Subtotal (4 items)</span><span class="lang-zh">小计 (4件)</span></span><span class="font-semibold">฿17,660</span></div>
-                        <div class="flex justify-between"><span class="text-gray-600"><span class="lang-th">ค่าจัดส่ง</span><span class="lang-en">Shipping</span><span class="lang-zh">运费</span></span><span class="font-semibold text-green-600"><span class="lang-th">ฟรี</span><span class="lang-en">Free</span><span class="lang-zh">免运费</span></span></div>
+                        <div class="flex justify-between"><span class="text-gray-600"><span class="lang-th">ยอดรวม</span><span class="lang-en">Subtotal</span><span class="lang-zh">小计</span> (<span id="itemCount">0</span> <span class="lang-th">ชิ้น</span><span class="lang-en">items</span><span class="lang-zh">件</span>)</span><span class="font-semibold" id="checkoutSubtotal">฿0</span></div>
+                        <div class="flex justify-between"><span class="text-gray-600"><span class="lang-th">ค่าจัดส่ง</span><span class="lang-en">Shipping</span><span class="lang-zh">运费</span></span><span class="font-semibold text-green-600" id="checkoutShipping"><span class="lang-th">ฟรี</span><span class="lang-en">Free</span><span class="lang-zh">免运费</span></span></div>
                         <hr>
-                        <div class="flex justify-between text-lg"><span class="font-bold"><span class="lang-th">ยอดรวม</span><span class="lang-en">Total</span><span class="lang-zh">合计</span></span><span class="font-bold text-thai-red">฿17,660</span></div>
+                        <div class="flex justify-between text-lg"><span class="font-bold"><span class="lang-th">ยอดรวม</span><span class="lang-en">Total</span><span class="lang-zh">合计</span></span><span class="font-bold text-thai-red" id="checkoutTotal">฿0</span></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
-        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
-
-        var currentStep=1;
-        function goStep(n){
-            for(var i=1;i<=4;i++)document.getElementById('step'+i).classList.toggle('hidden',i!==n);
-            for(var i=1;i<=4;i++){
-                var dot=document.getElementById('step'+i+'dot');
-                dot.classList.remove('active','done','bg-gray-200','text-gray-500');
-                if(i<n)dot.classList.add('done');
-                else if(i===n)dot.classList.add('active');
-                else{dot.classList.add('bg-gray-200','text-gray-500')}
-            }
-            for(var i=1;i<=3;i++){
-                var line=document.getElementById('line'+i);
-                line.classList.remove('active','done');
-                if(i<n)line.classList.add('done');
-                else if(i===n)line.classList.add('active');
-            }
-            currentStep=n;window.scrollTo(0,0);
-        }
-        function selectShipping(el){document.querySelectorAll('.shipping-card').forEach(function(c){c.classList.remove('selected')});el.classList.add('selected');el.querySelector('input').checked=true}
-        function selectPayment(el,type){document.querySelectorAll('.pay-card').forEach(function(c){c.classList.remove('selected')});el.classList.add('selected');el.querySelector('input').checked=true;document.getElementById('cardSection').classList.toggle('hidden',type!=='card');document.getElementById('promptpaySection').classList.toggle('hidden',type!=='promptpay')}
-        function placeOrder(){alert('Order placed! Order #TH20260504001');location.href='order-detail.html'}
-    </script>
+    <script src="../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="js/checkout.js"></script>
 </body>
 </html>

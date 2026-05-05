@@ -61,88 +61,23 @@
         <span class="text-thai-purple font-semibold"><span class="lang-th">ตะกร้าสินค้า</span><span class="lang-en">Shopping Cart</span><span class="lang-zh">购物车</span></span>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 pb-12">
-        <h1 class="text-2xl font-bold text-thai-purple mb-6">
-            <span class="lang-th">ตะกร้าสินค้า (3 รายการ)</span><span class="lang-en">Shopping Cart (3 items)</span><span class="lang-zh">购物车 (3 件商品)</span>
+    <div class="max-w-7xl mx-auto px-4 pb-12" id="cartContainer">
+        <h1 class="text-2xl font-bold text-thai-purple mb-6" id="cartTitle">
+            <span class="lang-th">ตะกร้าสินค้า</span><span class="lang-en">Shopping Cart</span><span class="lang-zh">购物车</span>
         </h1>
 
         <div class="flex flex-col lg:flex-row gap-6">
             <!-- Cart Items -->
-            <div class="flex-1 space-y-4">
-                <!-- Item 1 -->
-                <div class="cart-item bg-white rounded-xl p-4 flex gap-4 items-center shadow-sm" id="cartItem1">
-                    <div class="w-20 h-20 bg-gradient-to-br from-thai-cream to-yellow-100 rounded-lg flex items-center justify-center text-3xl flex-shrink-0">📱</div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-semibold text-sm text-gray-800 truncate">
-                            <span class="lang-th">สมาร์ทโฟนรุ่นใหม่ Pro Max 256GB</span><span class="lang-en">Latest Smartphone Pro Max 256GB</span><span class="lang-zh">最新智能手机 Pro Max 256GB</span>
-                        </h3>
-                        <p class="text-thai-red font-bold mt-1">฿12,990</p>
-                        <div class="flex items-center gap-3 mt-2">
-                            <div class="flex items-center border rounded-lg overflow-hidden">
-                                <button onclick="updateQty('cartItem1',-1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm font-bold">−</button>
-                                <span class="px-3 py-1 text-sm font-semibold qty-val">1</span>
-                                <button onclick="updateQty('cartItem1',1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm font-bold">+</button>
-                            </div>
-                            <p class="text-gray-500 text-xs"><span class="lang-th">รวม:</span><span class="lang-en">Subtotal:</span><span class="lang-zh">小计:</span> <span class="item-subtotal font-bold text-thai-purple">฿12,990</span></p>
-                        </div>
-                    </div>
-                    <button onclick="removeItem('cartItem1')" class="text-gray-400 hover:text-thai-red transition text-xl flex-shrink-0">✕</button>
-                </div>
-
-                <!-- Item 2 -->
-                <div class="cart-item bg-white rounded-xl p-4 flex gap-4 items-center shadow-sm" id="cartItem2">
-                    <div class="w-20 h-20 bg-gradient-to-br from-sky-50 to-blue-100 rounded-lg flex items-center justify-center text-3xl flex-shrink-0">🎧</div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-semibold text-sm text-gray-800 truncate">
-                            <span class="lang-th">หูฟังไร้สาย Pro</span><span class="lang-en">Wireless Earbuds Pro</span><span class="lang-zh">无线耳机 Pro</span>
-                        </h3>
-                        <p class="text-thai-red font-bold mt-1">฿1,990</p>
-                        <div class="flex items-center gap-3 mt-2">
-                            <div class="flex items-center border rounded-lg overflow-hidden">
-                                <button onclick="updateQty('cartItem2',-1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm font-bold">−</button>
-                                <span class="px-3 py-1 text-sm font-semibold qty-val">2</span>
-                                <button onclick="updateQty('cartItem2',1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm font-bold">+</button>
-                            </div>
-                            <p class="text-gray-500 text-xs"><span class="lang-th">รวม:</span><span class="lang-en">Subtotal:</span><span class="lang-zh">小计:</span> <span class="item-subtotal font-bold text-thai-purple">฿3,980</span></p>
-                        </div>
-                    </div>
-                    <button onclick="removeItem('cartItem2')" class="text-gray-400 hover:text-thai-red transition text-xl flex-shrink-0">✕</button>
-                </div>
-
-                <!-- Item 3 -->
-                <div class="cart-item bg-white rounded-xl p-4 flex gap-4 items-center shadow-sm" id="cartItem3">
-                    <div class="w-20 h-20 bg-gradient-to-br from-amber-50 to-orange-100 rounded-lg flex items-center justify-center text-3xl flex-shrink-0">🔋</div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-semibold text-sm text-gray-800 truncate">
-                            <span class="lang-th">แบตเตอรี่สำรอง 20000mAh</span><span class="lang-en">Power Bank 20000mAh</span><span class="lang-zh">充电宝 20000mAh</span>
-                        </h3>
-                        <p class="text-thai-red font-bold mt-1">฿690</p>
-                        <div class="flex items-center gap-3 mt-2">
-                            <div class="flex items-center border rounded-lg overflow-hidden">
-                                <button onclick="updateQty('cartItem3',-1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm font-bold">−</button>
-                                <span class="px-3 py-1 text-sm font-semibold qty-val">1</span>
-                                <button onclick="updateQty('cartItem3',1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-sm font-bold">+</button>
-                            </div>
-                            <p class="text-gray-500 text-xs"><span class="lang-th">รวม:</span><span class="lang-en">Subtotal:</span><span class="lang-zh">小计:</span> <span class="item-subtotal font-bold text-thai-purple">฿690</span></p>
-                        </div>
-                    </div>
-                    <button onclick="removeItem('cartItem3')" class="text-gray-400 hover:text-thai-red transition text-xl flex-shrink-0">✕</button>
-                </div>
-
-                <!-- Coupon -->
-                <div class="bg-white rounded-xl p-4 shadow-sm">
-                    <div class="flex gap-3">
-                        <input type="text" placeholder="SAVE10 / FLAT100" class="flex-1 border-2 rounded-lg px-4 py-2 text-sm focus:border-thai-gold outline-none" id="couponInput">
-                        <button onclick="applyCoupon()" class="bg-thai-gold text-thai-purple px-6 py-2 rounded-lg font-bold text-sm hover:bg-thai-orange hover:text-white transition">
-                            <span class="lang-th">ใช้คูปอง</span><span class="lang-en">Apply</span><span class="lang-zh">使用</span>
-                        </button>
-                    </div>
-                    <p id="couponMsg" class="text-sm mt-2 hidden"></p>
+            <div class="flex-1 space-y-4" id="cartItemsList">
+                <!-- Items loaded dynamically by cart.js -->
+                <div class="text-center py-10 text-gray-400">
+                    <div class="text-4xl mb-4">⏳</div>
+                    <p><span class="lang-th">กำลังโหลด...</span><span class="lang-en">Loading...</span><span class="lang-zh">加载中...</span></p>
                 </div>
             </div>
 
             <!-- Cart Summary -->
-            <div class="lg:w-80">
+            <div class="lg:w-80" id="cartSummary">
                 <div class="bg-white rounded-xl shadow-md p-6 sticky top-20">
                     <h3 class="font-bold text-lg text-thai-purple mb-4">
                         <span class="lang-th">สรุปคำสั่งซื้อ</span><span class="lang-en">Order Summary</span><span class="lang-zh">订单摘要</span>
@@ -150,7 +85,7 @@
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between">
                             <span class="text-gray-600"><span class="lang-th">ยอดรวม</span><span class="lang-en">Subtotal</span><span class="lang-zh">小计</span></span>
-                            <span class="font-semibold" id="subtotal">฿17,660</span>
+                            <span class="font-semibold" id="subtotal">฿0</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600"><span class="lang-th">ค่าจัดส่ง</span><span class="lang-en">Shipping</span><span class="lang-zh">运费</span></span>
@@ -163,10 +98,10 @@
                         <hr>
                         <div class="flex justify-between text-lg">
                             <span class="font-bold"><span class="lang-th">ยอดรวมทั้งหมด</span><span class="lang-en">Total</span><span class="lang-zh">合计</span></span>
-                            <span class="font-bold text-thai-red" id="totalAmt">฿17,660</span>
+                            <span class="font-bold text-thai-red" id="totalAmt">฿0</span>
                         </div>
                     </div>
-                    <button onclick="location.href='checkout.html'" class="w-full mt-6 bg-thai-red text-white py-3 rounded-xl font-bold text-lg hover:bg-red-700 transition shadow-lg">
+                    <button onclick="goToCheckout()" id="checkoutBtn" class="w-full mt-6 bg-thai-red text-white py-3 rounded-xl font-bold text-lg hover:bg-red-700 transition shadow-lg">
                         <span class="lang-th">ดำเนินการชำระเงิน</span><span class="lang-en">Proceed to Checkout</span><span class="lang-zh">去结算</span>
                     </button>
                     <a href="products.html" class="block text-center mt-3 text-sm text-thai-purple hover:text-thai-red transition">
@@ -188,50 +123,9 @@
         <div class="border-t border-white/20 text-center py-4 text-xs text-white/50">© 2026 ThaiShop</div>
     </footer>
 
-    <script>
-        var prices={cartItem1:12990,cartItem2:1990,cartItem3:690};
-        var qtys={cartItem1:1,cartItem2:2,cartItem3:1};
-        var discount=0;
-
-        function switchLang(lang){document.body.className='lang-'+lang;try{localStorage.setItem('thaishop-lang',lang)}catch(e){}document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');if(b.textContent.trim()===(lang==='th'?'ไทย':lang==='en'?'EN':'中文'))b.classList.add('active')})}
-        try{var s=localStorage.getItem('thaishop-lang');if(s)switchLang(s)}catch(e){}
-
-        function updateQty(id,d){
-            qtys[id]=Math.max(1,qtys[id]+d);
-            var el=document.getElementById(id);
-            el.querySelector('.qty-val').textContent=qtys[id];
-            el.querySelector('.item-subtotal').textContent='฿'+(prices[id]*qtys[id]).toLocaleString();
-            recalcTotal();
-        }
-        function removeItem(id){
-            var el=document.getElementById(id);
-            el.style.opacity='0';el.style.transform='translateX(100px)';
-            setTimeout(function(){el.remove();delete qtys[id];delete prices[id];recalcTotal()},300);
-        }
-        function recalcTotal(){
-            var sub=0;for(var id in qtys)sub+=prices[id]*qtys[id];
-            var ship=sub>=500?0:50;
-            var total=sub- discount+ship;
-            document.getElementById('subtotal').textContent='฿'+sub.toLocaleString();
-            document.getElementById('shippingFee').innerHTML=ship===0?'<span class="lang-th">ฟรี</span><span class="lang-en">Free</span><span class="lang-zh">免运费</span>':'฿'+ship;
-            if(discount>0){document.getElementById('discountRow').style.display='flex';document.getElementById('discountAmt').textContent='-฿'+discount.toLocaleString()}
-            document.getElementById('totalAmt').textContent='฿'+(total>0?total.toLocaleString():'0');
-        }
-        function applyCoupon(){
-            var code=document.getElementById('couponInput').value.trim().toUpperCase();
-            var msg=document.getElementById('couponMsg');
-            msg.classList.remove('hidden');
-            if(code==='SAVE10'){
-                var sub=0;for(var id in qtys)sub+=prices[id]*qtys[id];
-                discount=Math.round(sub*0.1);recalcTotal();
-                msg.className='text-sm mt-2 text-green-600';msg.textContent='✅ '+code+' <span class="lang-th">ใช้แล้ว! ลด ฿</span><span class="lang-en">applied! Save ฿</span><span class="lang-zh">已使用！省 ฿</span>'+discount.toLocaleString();
-            }else if(code==='FLAT100'){
-                discount=100;recalcTotal();
-                msg.className='text-sm mt-2 text-green-600';msg.textContent='✅ '+code+' <span class="lang-th">ใช้แล้ว! ลด ฿100</span><span class="lang-en">applied! Save ฿100</span><span class="lang-zh">已使用！省฿100</span>';
-            }else{
-                msg.className='text-sm mt-2 text-red-500';msg.textContent='❌ <span class="lang-th">รหัสไม่ถูกต้อง</span><span class="lang-en">Invalid code</span><span class="lang-zh">无效代码</span>';
-            }
-        }
-    </script>
+    <script src="../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="js/cart.js"></script>
 </body>
 </html>
