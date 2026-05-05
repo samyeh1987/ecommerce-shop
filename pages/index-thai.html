@@ -314,7 +314,7 @@
             <span class="lang-th">สำรวจหมวดหมสินค้ายอดนิยมในไทย</span>
         </p>
         <div id="category-grid" class="grid grid-cols-3 md:grid-cols-6 gap-6 text-center">
-            <div class="cursor-pointer">
+            <div class="cursor-pointer" onclick="navigateToCategory('beauty')">
                 <div class="cat-icon" style="background: linear-gradient(135deg, #FFE0EC, #FFC0D8);">💄</div>
                 <div class="text-sm font-semibold text-gray-700">
                     <span class="lang-zh">美妆</span>
@@ -322,7 +322,7 @@
                     <span class="lang-th">เครื่องสำอาง</span>
                 </div>
             </div>
-            <div class="cursor-pointer">
+            <div class="cursor-pointer" onclick="navigateToCategory('fashion')">
                 <div class="cat-icon" style="background: linear-gradient(135deg, #E0F2FE, #BAE6FD);">👗</div>
                 <div class="text-sm font-semibold text-gray-700">
                     <span class="lang-zh">服饰</span>
@@ -330,7 +330,7 @@
                     <span class="lang-th">แฟชั่น</span>
                 </div>
             </div>
-            <div class="cursor-pointer">
+            <div class="cursor-pointer" onclick="navigateToCategory('food')">
                 <div class="cat-icon" style="background: linear-gradient(135deg, #DCFCE7, #BBF7D0);">🍜</div>
                 <div class="text-sm font-semibold text-gray-700">
                     <span class="lang-zh">美食</span>
@@ -338,7 +338,7 @@
                     <span class="lang-th">อาหาร</span>
                 </div>
             </div>
-            <div class="cursor-pointer">
+            <div class="cursor-pointer" onclick="navigateToCategory('home')">
                 <div class="cat-icon" style="background: linear-gradient(135deg, #FEF9C3, #FDE047);">🏠</div>
                 <div class="text-sm font-semibold text-gray-700">
                     <span class="lang-zh">家居</span>
@@ -346,7 +346,7 @@
                     <span class="lang-th">ของใช้ในบ้าน</span>
                 </div>
             </div>
-            <div class="cursor-pointer">
+            <div class="cursor-pointer" onclick="navigateToCategory('electronics')">
                 <div class="cat-icon" style="background: linear-gradient(135deg, #EDE9FE, #DDD6FE);">📱</div>
                 <div class="text-sm font-semibold text-gray-700">
                     <span class="lang-zh">数码</span>
@@ -354,7 +354,7 @@
                     <span class="lang-th">อิเล็กทรอนิกส์</span>
                 </div>
             </div>
-            <div class="cursor-pointer">
+            <div class="cursor-pointer" onclick="navigateToCategory('more')">
                 <div class="cat-icon" style="background: linear-gradient(135deg, #FFEDD5, #FED7AA);">🎁</div>
                 <div class="text-sm font-semibold text-gray-700">
                     <span class="lang-zh">更多</span>
@@ -733,6 +733,7 @@
     <script src="../js/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="../js/supabase-client.js"></script>
+    <script>if(window.ThaiShop)Object.entries(window.ThaiShop).forEach(([k,v])=>window[k]=v);</script>
     <script src="js/index-thai.js"></script>
 </body>
 </html>

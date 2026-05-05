@@ -84,22 +84,37 @@ function goToSlide(n) {
 }
 
 // ===== Categories =====
+var MOCK_CATEGORIES = [
+    { id: 'beauty', name: '美妆', name_en: 'Beauty', name_th: 'เครื่องสำอาง' },
+    { id: 'fashion', name: '服饰', name_en: 'Fashion', name_th: 'แฟชั่น' },
+    { id: 'food', name: '美食', name_en: 'Food', name_th: 'อาหาร' },
+    { id: 'home', name: '家居', name_en: 'Home', name_th: 'ของใช้ในบ้าน' },
+    { id: 'electronics', name: '数码', name_en: 'Electronics', name_th: 'อิเล็กทรอนิกส์' },
+    { id: 'more', name: '更多', name_en: 'More', name_th: 'เพิ่มเติม' }
+];
+
+var MOCK_PRODUCTS = [
+    { id: 'prod-1', name: 'Thann 紫苏防晒霜 SPF50+ PA++++', name_en: 'Thann Sunscreen SPF50+', name_th: 'กันแดด Thann SPF50+', price: 1390, sale_price: 890, category_id: 'beauty', rating: 4.9, sold_count: 1523 },
+    { id: 'prod-2', name: '小金条蓝牙耳机 泰国版', name_en: 'Mini Earbuds Thailand', name_th: 'หูฟังบลูทูธ ฉบับไทย', price: 990, sale_price: 590, category_id: 'electronics', rating: 4.8, sold_count: 892 },
+    { id: 'prod-3', name: '泰国青草膏 卧佛牌 50g', name_en: 'Thai Herbal Balm 50g', name_th: 'ยาหม่องไทย วัดโพธิ์ 50g', price: 150, sale_price: 85, category_id: 'health', rating: 4.9, sold_count: 3201 },
+    { id: 'prod-4', name: '泰式芒果糯米 即食包', name_en: 'Mango Sticky Rice Ready-to-eat', name_th: 'ข้าวเหนียวมะม่วง พร้อมทาน', price: 120, sale_price: 79, category_id: 'food', rating: 4.7, sold_count: 2156 }
+];
+
 async function loadCategories() {
     const container = document.getElementById('category-grid');
     if (!container) return;
 
     try {
-        // Check if getCategories function exists (from supabase-client.js)
         if (typeof getCategories === 'function') {
             const categories = await getCategories();
             renderCategories(categories);
         } else {
-            // Fallback: load static categories
-            renderStaticCategories();
+            // 使用 mock 資料
+            renderCategories(MOCK_CATEGORIES);
         }
     } catch (error) {
         console.error('Failed to load categories:', error);
-        renderStaticCategories();
+        renderCategories(MOCK_CATEGORIES);
     }
 }
 
@@ -156,23 +171,22 @@ async function loadFlashSale() {
     if (!container) return;
 
     try {
-        // Check if getFlashSaleProducts function exists
         if (typeof getFlashSaleProducts === 'function') {
             const products = await getFlashSaleProducts();
             renderFlashSaleProducts(products);
+        } else {
+            // 使用 mock 資料
+            renderFlashSaleProducts(MOCK_PRODUCTS.slice(0, 5));
         }
 
-        // Get flash sale end time from promotions
-        if (typeof getFlashSaleEndTime === 'function') {
-            const endTime = await getFlashSaleEndTime();
-            startFlashCountdown(endTime);
-        } else {
-            // Default: 2 hours from now
-            const defaultEnd = new Date(Date.now() + 2 * 60 * 60 * 1000);
-            startFlashCountdown(defaultEnd);
-        }
+        // 啟動倒數（預設 2 小時）
+        const end = new Date(Date.now() + 2 * 60 * 60 * 1000);
+        startFlashCountdown(end);
     } catch (error) {
         console.error('Failed to load flash sale:', error);
+        renderFlashSaleProducts(MOCK_PRODUCTS.slice(0, 5));
+        const end = new Date(Date.now() + 2 * 60 * 60 * 1000);
+        startFlashCountdown(end);
     }
 }
 
@@ -258,17 +272,16 @@ async function loadFeaturedProducts() {
     if (!container) return;
 
     try {
-        // Check if getProducts function exists with sort parameter
         if (typeof getProducts === 'function') {
             const products = await getProducts({ sort: 'featured', limit: 8 });
             renderFeaturedProducts(products);
         } else {
-            // Fallback: try with just limit
-            const products = await getProducts({ limit: 8 });
-            renderFeaturedProducts(products);
+            // 使用 mock 資料
+            renderFeaturedProducts(MOCK_PRODUCTS);
         }
     } catch (error) {
         console.error('Failed to load featured products:', error);
+        renderFeaturedProducts(MOCK_PRODUCTS);
     }
 }
 

@@ -1439,4 +1439,32 @@ if (typeof window !== 'undefined') {
     getErrorMessage,
     parseSupabaseError
   };
+
+  // 同時掛到全域，方便頁面 JS 直接呼叫
+  window.getProducts = getProducts;
+  window.getProductById = getProductById;
+  window.getCategories = getCategories;
+  window.getCartItems = getCartItems;
+  window.addToCart = addToCart;
+  window.updateCartItem = updateCartItem;
+  window.removeCartItem = removeCartItem;
+  window.clearCart = clearCart;
+  window.createOrder = createOrder;
+  window.getOrders = getOrders;
+  window.getOrderById = getOrderById;
+  window.register = register;
+  window.login = login;
+  window.logout = logout;
+  window.getCurrentUser = getCurrentUser;
+  window.updateProfile = updateProfile;
+  window.getAddresses = getAddresses;
+  window.addAddress = addAddress;
+  window.updateAddress = updateAddress;
+  window.deleteAddress = deleteAddress;
+  window.getActivePromotions = getActivePromotions;
+  window.getFlashSaleProducts = getFlashSaleProducts;
+  window.isAdmin = isAdmin;
+  window.getAuthUser = getAuthUser;
+  window.getErrorMessage = getErrorMessage;
+  window.parseSupabaseError = parseSupabaseError;
 }
