@@ -96,7 +96,7 @@ function renderOrders() {
     var date = new Date(order.created_at);
     var dateStr = date.toLocaleDateString('th-TH');
 
-    html += '<div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer" onclick="location.href=\'order-detail.html?id=' + order.id + '\'">' +
+    html += '<div class="border rounded-xl p-4 flex items-center gap-4 hover:border-thai-gold transition cursor-pointer" onclick="location.href=\'/order?id=' + order.id + '\'">' +
       '  <div class="flex-1">' +
       '    <div class="flex items-center gap-2 mb-1">' +
       '      <span class="font-bold text-sm">' + escapeHtml(order.order_number) + '</span>' +

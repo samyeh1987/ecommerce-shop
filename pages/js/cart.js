@@ -37,7 +37,7 @@ function showLoginPrompt() {
     '    <span class="lang-en">Login to manage your shopping cart</span>' +
     '    <span class="lang-zh">登录后即可管理您的购物车</span>' +
     '  </p>' +
-    '  <a href="login.html?redirect=cart.html" class="bg-thai-red text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 transition">' +
+    '  <a href="/login?redirect=/cart" class="bg-thai-red text-white px-8 py-3 rounded-xl font-bold hover:bg-red-700 transition">' +
     '    <span class="lang-th">เข้าสู่ระบบเลย</span>' +
     '    <span class="lang-en">Login Now</span>' +
     '    <span class="lang-zh">立即登录</span>' +
@@ -79,7 +79,7 @@ function showEmptyCart() {
     '    <span class="lang-en">Find something you love</span>' +
     '    <span class="lang-zh">挑选您喜欢的商品</span>' +
     '  </p>' +
-    '  <a href="products.html" class="bg-thai-gold text-thai-purple px-8 py-3 rounded-xl font-bold hover:bg-thai-orange hover:text-white transition">' +
+    '  <a href="/products" class="bg-thai-gold text-thai-purple px-8 py-3 rounded-xl font-bold hover:bg-thai-orange hover:text-white transition">' +
     '    <span class="lang-th">เลือกซื้อสินค้าต่อ</span>' +
     '    <span class="lang-en">Continue Shopping</span>' +
     '    <span class="lang-zh">继续购物</span>' +
@@ -326,7 +326,7 @@ function goToCheckout() {
   var selectedIds = [];
   selectedItems.forEach(function(id) { selectedIds.push(id); });
   localStorage.setItem('checkout_item_ids', JSON.stringify(selectedIds));
-  location.href = 'checkout.html';
+  location.href = '/checkout';
 }
 
 function escapeHtml(text) {

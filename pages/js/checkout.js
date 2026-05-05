@@ -18,20 +18,20 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Check login
   currentUser = await getCurrentUser();
   if (!currentUser) {
-    location.href = 'login.html?redirect=checkout.html';
+    location.href = '/login?redirect=/checkout';
     return;
   }
 
   // Load checkout item IDs from localStorage
   var itemIdsStr = localStorage.getItem('checkout_item_ids');
   if (!itemIdsStr) {
-    location.href = 'cart.html';
+    location.href = '/cart';
     return;
   }
 
   var itemIds = JSON.parse(itemIdsStr);
   if (!itemIds || itemIds.length === 0) {
-    location.href = 'cart.html';
+    location.href = '/cart';
     return;
   }
 
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   });
 
   if (checkoutItems.length === 0) {
-    location.href = 'cart.html';
+    location.href = '/cart';
     return;
   }
 
@@ -464,7 +464,7 @@ async function placeOrder() {
     localStorage.removeItem('checkout_item_ids');
 
     // Redirect to order detail
-    location.href = 'order-detail.html?id=' + orderId;
+    location.href = '/order?id=' + orderId;
 
   } catch (err) {
     console.error('Order error:', err);

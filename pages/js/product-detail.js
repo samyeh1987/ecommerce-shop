@@ -73,7 +73,7 @@ function showProductError() {
                     <span class="lang-en">The product you're looking for may have been removed or doesn't exist.</span>
                     <span class="lang-zh">您查找的商品可能已被删除或不存在。</span>
                 </p>
-                <a href="products.html" class="inline-block px-6 py-3 bg-thai-red text-white rounded-xl font-bold hover:bg-red-700 transition">
+                <a href="/products" class="inline-block px-6 py-3 bg-thai-red text-white rounded-xl font-bold hover:bg-red-700 transition">
                     <span class="lang-th">กลับไปหน้าสินค้า</span>
                     <span class="lang-en">Back to Products</span>
                     <span class="lang-zh">返回商品列表</span>
@@ -558,7 +558,7 @@ function switchLanguage(lang) {
 
 // ===== Utility Functions =====
 function navigateToProduct(productId) {
-    window.location.href = `product-detail.html?id=${productId}`;
+    window.location.href = `/product?id=${productId}`;
 }
 
 function getProductEmoji(categoryId) {

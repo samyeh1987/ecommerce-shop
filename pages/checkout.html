@@ -38,7 +38,7 @@
     <!-- Navbar -->
     <nav class="bg-thai-purple text-white sticky top-0 z-50 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="index-thai.html" class="text-2xl font-bold gold-text">ThaiShop</a>
+            <a href="/" class="text-2xl font-bold gold-text">ThaiShop</a>
             <div class="flex items-center gap-3">
                 <div class="flex gap-1 text-xs">
                     <button onclick="switchLang('th')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">ไทย</button>
@@ -51,9 +51,9 @@
 
     <!-- Breadcrumb -->
     <div class="max-w-7xl mx-auto px-4 py-3 text-sm text-gray-500">
-        <a href="index-thai.html" class="hover:text-thai-red"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+        <a href="/" class="hover:text-thai-red"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
         <span class="mx-2">›</span>
-        <a href="cart.html" class="hover:text-thai-red"><span class="lang-th">ตะกร้า</span><span class="lang-en">Cart</span><span class="lang-zh">购物车</span></a>
+        <a href="/cart" class="hover:text-thai-red"><span class="lang-th">ตะกร้า</span><span class="lang-en">Cart</span><span class="lang-zh">购物车</span></a>
         <span class="mx-2">›</span>
         <span class="text-thai-purple font-semibold"><span class="lang-th">ชำระเงิน</span><span class="lang-en">Checkout</span><span class="lang-zh">结算</span></span>
     </div>
@@ -293,10 +293,10 @@
         </div>
     </div>
 
-    <script src="../js/config.js"></script>
+    <script src="/js/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/supabase-client.js"></script>
+    <script src="/js/supabase-client.js"></script>
     <script>if(window.ThaiShop)Object.entries(window.ThaiShop).forEach(([k,v])=>window[k]=v);</script>
-    <script src="js/checkout.js"></script>
+    <script src="/pages/js/checkout.js"></script>
 </body>
 </html>

@@ -27,7 +27,7 @@ async function checkExistingAuth() {
 
 function getRedirectUrl() {
   var params = new URLSearchParams(window.location.search);
-  return params.get('redirect') || 'account.html';
+  return params.get('redirect') || '/account';
 }
 
 function setupFormHandlers() {

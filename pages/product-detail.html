@@ -38,11 +38,11 @@
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="lg:hidden text-2xl">☰</button>
-                <a href="index-thai.html" class="text-2xl font-bold gold-text">ThaiShop</a>
+                <a href="/" class="text-2xl font-bold gold-text">ThaiShop</a>
             </div>
             <div class="hidden lg:flex items-center gap-6 text-sm">
-                <a href="index-thai.html" class="hover:text-thai-gold transition"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
-                <a href="products.html" class="hover:text-thai-gold transition"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
+                <a href="/" class="hover:text-thai-gold transition"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+                <a href="/products" class="hover:text-thai-gold transition"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
                 <a href="#" class="hover:text-thai-gold transition"><span class="lang-th">โปรโมชั่น</span><span class="lang-en">Promotions</span><span class="lang-zh">促销</span></a>
                 <a href="#" class="hover:text-thai-gold transition"><span class="lang-th">เกี่ยวกับเรา</span><span class="lang-en">About</span><span class="lang-zh">关于</span></a>
             </div>
@@ -52,21 +52,21 @@
                     <button onclick="switchLang('en')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">EN</button>
                     <button onclick="switchLang('zh')" class="lang-btn px-2 py-1 rounded bg-white/20 hover:bg-thai-red transition">中文</button>
                 </div>
-                <a href="cart.html" class="relative hover:text-thai-gold transition">🛒 <span class="absolute -top-2 -right-2 bg-thai-red text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span></a>
-                <a href="login.html" class="hover:text-thai-gold transition">👤</a>
+                <a href="/cart" class="relative hover:text-thai-gold transition">🛒 <span class="absolute -top-2 -right-2 bg-thai-red text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span></a>
+                <a href="/login" class="hover:text-thai-gold transition">👤</a>
             </div>
         </div>
         <div id="mobileMenu" class="hidden lg:hidden px-4 pb-4 space-y-2 text-sm">
-            <a href="index-thai.html" class="block py-2 border-b border-white/20"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
-            <a href="products.html" class="block py-2 border-b border-white/20"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
+            <a href="/" class="block py-2 border-b border-white/20"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+            <a href="/products" class="block py-2 border-b border-white/20"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
         </div>
     </nav>
 
     <!-- Breadcrumb -->
     <div class="max-w-7xl mx-auto px-4 py-3 text-sm text-gray-500">
-        <a href="index-thai.html" class="hover:text-thai-red"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
+        <a href="/" class="hover:text-thai-red"><span class="lang-th">หน้าแรก</span><span class="lang-en">Home</span><span class="lang-zh">首页</span></a>
         <span class="mx-2">›</span>
-        <a href="products.html" class="hover:text-thai-red"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
+        <a href="/products" class="hover:text-thai-red"><span class="lang-th">สินค้า</span><span class="lang-en">Products</span><span class="lang-zh">商品</span></a>
         <span class="mx-2">›</span>
         <span id="breadcrumbProduct" class="text-thai-purple font-semibold"><span class="lang-th">สินค้า</span><span class="lang-en">Product</span><span class="lang-zh">商品</span></span>
     </div>
@@ -149,7 +149,7 @@
                     <button id="addToCartBtn" onclick="addToCart()" class="flex-1 bg-thai-gold text-thai-purple py-3 rounded-xl font-bold text-lg hover:bg-thai-orange hover:text-white transition shadow-lg cursor-pointer">
                         🛒 <span class="lang-th">เพิ่มลงตะกร้า</span><span class="lang-en">Add to Cart</span><span class="lang-zh">加入购物车</span>
                     </button>
-                    <button onclick="location.href='checkout.html'" class="flex-1 bg-thai-red text-white py-3 rounded-xl font-bold text-lg hover:bg-red-700 transition shadow-lg">
+                    <button onclick="location.href='/checkout'" class="flex-1 bg-thai-red text-white py-3 rounded-xl font-bold text-lg hover:bg-red-700 transition shadow-lg">
                         ⚡ <span class="lang-th">ซื้อเลย</span><span class="lang-en">Buy Now</span><span class="lang-zh">立即购买</span>
                     </button>
                 </div>
@@ -267,10 +267,10 @@
     </footer>
 
     <!-- ===== Supabase & App Scripts ===== -->
-    <script src="../js/config.js"></script>
+    <script src="/js/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../js/supabase-client.js"></script>
+    <script src="/js/supabase-client.js"></script>
     <script>if(window.ThaiShop)Object.entries(window.ThaiShop).forEach(([k,v])=>window[k]=v);</script>
-    <script src="js/product-detail.js"></script>
+    <script src="/pages/js/product-detail.js"></script>
 </body>
 </html>

@@ -518,7 +518,7 @@ function switchLanguage(lang) {
 
 // ===== Utility Functions =====
 function navigateToProduct(productId) {
-    window.location.href = `product-detail.html?id=${productId}`;
+    window.location.href = `/product?id=${productId}`;
 }
 
 function getProductEmoji(categoryId) {
