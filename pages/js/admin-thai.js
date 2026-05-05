@@ -168,6 +168,7 @@ function showAdminContent() {
             <p class="text-white/50 text-xs">${currentAdmin.email || 'admin@thaishop.com'}</p>
         `;
     }
+    showSection('dashboard');
 }
 
 // ==================== DASHBOARD ====================
