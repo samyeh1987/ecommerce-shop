@@ -39,7 +39,9 @@
         }
 
         /* 多语言切换 - 关键样式 */
-        .lang-zh, .lang-en, .lang-th { display: none !important; }
+        /* 用 body 前綴確保只匹配 body 的後代元素，不匹配 body 本身 */
+        body .lang-zh, body .lang-en, body .lang-th { display: none !important; }
+        body.lang-zh, body.lang-en, body.lang-th { display: block !important; }
         body.lang-zh .lang-zh { display: inline-block !important; }
         body.lang-en .lang-en { display: inline-block !important; }
         body.lang-th .lang-th { display: inline-block !important; }

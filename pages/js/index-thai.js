@@ -328,14 +328,18 @@ function renderFeaturedProducts(products) {
 function initLanguageFromStorage() {
     try {
         var saved = localStorage.getItem('lang') || 'zh';
-        switchLanguage(saved);
     } catch(e) {
-        switchLanguage('zh');
+        var saved = 'zh';
     }
+    // 先確保 body 可見
+    document.body.style.display = 'block';
+    switchLanguage(saved);
 }
 
 function switchLanguage(lang) {
     document.body.className = 'lang-' + lang;
+    // 確保 body 不會被 CSS 隱藏（.lang-zh 等選擇器可能匹配 body 本身）
+    document.body.style.display = 'block';
     try {
         localStorage.setItem('lang', lang);
     } catch(e) {}
