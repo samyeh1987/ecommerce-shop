@@ -68,13 +68,19 @@ function showAccountContent() {
 function loadUserProfile() {
   if (!currentUser) return;
 
+  // currentUser 結構: { id, email, ..., profile: { full_name, phone, ... } }
+  var profile = currentUser.profile || {};
+  var displayName = profile.full_name || currentUser.user_metadata?.full_name || 'N/A';
+  var displayEmail = currentUser.email || profile.email || 'N/A';
+  var displayPhone = profile.phone || currentUser.user_metadata?.phone || 'N/A';
+
   var nameEl = document.getElementById('profileName');
   var emailEl = document.getElementById('profileEmail');
   var phoneEl = document.getElementById('profilePhone');
 
-  if (nameEl) nameEl.textContent = currentUser.full_name || 'N/A';
-  if (emailEl) emailEl.textContent = currentUser.email || 'N/A';
-  if (phoneEl) phoneEl.textContent = currentUser.phone || 'N/A';
+  if (nameEl) nameEl.textContent = displayName;
+  if (emailEl) emailEl.textContent = displayEmail;
+  if (phoneEl) phoneEl.textContent = displayPhone;
 }
 
 async function loadOrders(filter) {

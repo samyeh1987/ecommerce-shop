@@ -204,7 +204,7 @@ async function getProducts(options = {}) {
   }
 
   try {
-    let query = supabase
+    let query = _sbClient
       .from('products')
       .select(`
         id, name, slug, description, price, sale_price, compare_price,
@@ -224,7 +224,7 @@ async function getProducts(options = {}) {
         query = query.eq('category_id', options.category);
       } else if (options.category.includes('-')) {
         // slug 格式如 'health-beauty'
-        const { data: cat } = await supabase
+        const { data: cat } = await _sbClient
           .from('product_categories')
           .select('id')
           .eq('slug', options.category)
@@ -234,7 +234,7 @@ async function getProducts(options = {}) {
         }
       } else {
         // 短名稱如 'beauty'，嘗試 slug 匹配
-        const { data: cat } = await supabase
+        const { data: cat } = await _sbClient
           .from('product_categories')
           .select('id')
           .or(`slug.ilike.%${options.category}%,name_en.ilike.%${options.category}%`)
@@ -319,7 +319,7 @@ async function getProductById(id) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('products')
       .select(`
         id, name, slug, description, price, sale_price, compare_price,
@@ -353,7 +353,7 @@ async function getCategories() {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('product_categories')
       .select('*')
       .eq('is_active', true)
@@ -388,7 +388,7 @@ async function getCartItems(userId) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('cart_items')
       .select(`
         *,
@@ -429,7 +429,7 @@ async function addToCart(userId, productId, quantity = 1) {
 
   try {
     // 檢查商品庫存
-    const { data: product, error: productError } = await supabase
+    const { data: product, error: productError } = await _sbClient
       .from('products')
       .select('stock_quantity, is_active')
       .eq('id', productId)
@@ -444,7 +444,7 @@ async function addToCart(userId, productId, quantity = 1) {
     }
 
     // 檢查現有購物車項目
-    const { data: existing } = await supabase
+    const { data: existing } = await _sbClient
       .from('cart_items')
       .select('quantity')
       .eq('user_id', userId)
@@ -459,7 +459,7 @@ async function addToCart(userId, productId, quantity = 1) {
 
     // 如果已存在，更新數量；否則新增
     if (existing) {
-      const { data, error } = await supabase
+      const { data, error } = await _sbClient
         .from('cart_items')
         .update({ quantity: newQuantity })
         .eq('id', existing.id)
@@ -471,7 +471,7 @@ async function addToCart(userId, productId, quantity = 1) {
       }
       return createResponse(true, data);
     } else {
-      const { data, error } = await supabase
+      const { data, error } = await _sbClient
         .from('cart_items')
         .insert({ user_id: userId, product_id: productId, quantity })
         .select()
@@ -500,7 +500,7 @@ async function updateCartItem(itemId, quantity) {
 
   try {
     // 檢查商品庫存
-    const { data: cartItem } = await supabase
+    const { data: cartItem } = await _sbClient
       .from('cart_items')
       .select('product_id')
       .eq('id', itemId)
@@ -510,7 +510,7 @@ async function updateCartItem(itemId, quantity) {
       return createResponse(false, null, getErrorMessage('notFound', currentLang));
     }
 
-    const { data: product } = await supabase
+    const { data: product } = await _sbClient
       .from('products')
       .select('stock_quantity')
       .eq('id', cartItem.product_id)
@@ -520,7 +520,7 @@ async function updateCartItem(itemId, quantity) {
       return createResponse(false, null, getErrorMessage('outOfStock', currentLang));
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('cart_items')
       .update({ quantity })
       .eq('id', itemId)
@@ -548,7 +548,7 @@ async function removeCartItem(itemId) {
   }
 
   try {
-    const { error } = await supabase
+    const { error } = await _sbClient
       .from('cart_items')
       .delete()
       .eq('id', itemId);
@@ -578,7 +578,7 @@ async function clearCart(userId) {
   }
 
   try {
-    const { error } = await supabase
+    const { error } = await _sbClient
       .from('cart_items')
       .delete()
       .eq('user_id', userId);
@@ -618,7 +618,7 @@ async function createOrder(orderData, items) {
     const totalAmount = items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
 
     // 建立訂單
-    const { data: order, error: orderError } = await supabase
+    const { data: order, error: orderError } = await _sbClient
       .from('orders')
       .insert({
         user_id: user.id,
@@ -645,7 +645,7 @@ async function createOrder(orderData, items) {
       total_price: item.unit_price * item.quantity
     }));
 
-    const { error: itemsError } = await supabase
+    const { error: itemsError } = await _sbClient
       .from('order_items')
       .insert(orderItems);
 
@@ -657,14 +657,14 @@ async function createOrder(orderData, items) {
 
     // 更新商品庫存
     for (const item of items) {
-      const { data: product } = await supabase
+      const { data: product } = await _sbClient
         .from('products')
         .select('stock_quantity')
         .eq('id', item.product_id)
         .single();
 
       if (product) {
-        await supabase
+        await _sbClient
           .from('products')
           .update({ stock_quantity: product.stock_quantity - item.quantity })
           .eq('id', item.product_id);
@@ -695,7 +695,7 @@ async function getOrders(userId) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('orders')
       .select(`
         *,
@@ -729,7 +729,7 @@ async function getOrderById(orderId) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('orders')
       .select(`
         *,
@@ -952,7 +952,7 @@ async function updateProfile(data) {
   }
 
   try {
-    const { data: result, error } = await supabase
+    const { data: result, error } = await _sbClient
       .from('users')
       .update({
         full_name: data.full_name,
@@ -992,7 +992,7 @@ async function getAddresses(userId) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('addresses')
       .select('*')
       .eq('user_id', userId)
@@ -1027,13 +1027,13 @@ async function addAddress(userId, address) {
   try {
     // 如果設為預設，先取消其他預設
     if (address.is_default) {
-      await supabase
+      await _sbClient
         .from('addresses')
         .update({ is_default: false })
         .eq('user_id', userId);
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('addresses')
       .insert({
         user_id: userId,
@@ -1071,7 +1071,7 @@ async function updateAddress(id, address) {
 
   try {
     // 取得地址確認擁有者
-    const { data: existing } = await supabase
+    const { data: existing } = await _sbClient
       .from('addresses')
       .select('user_id, is_default')
       .eq('id', id)
@@ -1083,13 +1083,13 @@ async function updateAddress(id, address) {
 
     // 如果設為預設，先取消其他預設
     if (address.is_default && !existing.is_default) {
-      await supabase
+      await _sbClient
         .from('addresses')
         .update({ is_default: false })
         .eq('user_id', existing.user_id);
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('addresses')
       .update({
         recipient_name: address.recipient_name,
@@ -1125,7 +1125,7 @@ async function deleteAddress(id) {
   }
 
   try {
-    const { error } = await supabase
+    const { error } = await _sbClient
       .from('addresses')
       .delete()
       .eq('id', id);
@@ -1165,7 +1165,7 @@ async function getFlashSaleProducts(limit = 6) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('products')
       .select(`
         id, name, slug, price, sale_price, compare_price,
@@ -1221,7 +1221,7 @@ async function adminGetOrders(filter = {}) {
   }
 
   try {
-    let query = supabase
+    let query = _sbClient
       .from('orders')
       .select(`
         *,
@@ -1280,7 +1280,7 @@ async function adminUpdateOrderStatus(orderId, status) {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('orders')
       .update({
         status,
@@ -1315,7 +1315,7 @@ async function adminGetProducts() {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('products')
       .select(`
         *,
@@ -1354,7 +1354,7 @@ async function adminCreateProduct(data) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '');
 
-    const { data: product, error } = await supabase
+    const { data: product, error } = await _sbClient
       .from('products')
       .insert({
         name: data.name,
@@ -1410,7 +1410,7 @@ async function adminUpdateProduct(id, data) {
     if (data.weight !== undefined) updateData.weight = data.weight;
     if (data.is_active !== undefined) updateData.is_active = data.is_active;
 
-    const { data: product, error } = await supabase
+    const { data: product, error } = await _sbClient
       .from('products')
       .update(updateData)
       .eq('id', id)
@@ -1443,7 +1443,7 @@ async function adminDeleteProduct(id) {
   }
 
   try {
-    const { error } = await supabase
+    const { error } = await _sbClient
       .from('products')
       .delete()
       .eq('id', id);
@@ -1473,7 +1473,7 @@ async function adminGetUsers() {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await _sbClient
       .from('users')
       .select('*')
       .order('created_at', { ascending: false });

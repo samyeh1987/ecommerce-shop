@@ -123,8 +123,26 @@ async function handleLogin() {
     btn.innerHTML = '<span class="lang-th">กำลังเข้าสู่ระบบ...</span><span class="lang-en">Logging in...</span><span class="lang-zh">登录中...</span>';
   }
 
+  // 保險：15 秒後強制恢復按鈕（防止 Supabase 專案暫停時無限等待）
+  var loginBackupTimer = setTimeout(function() {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="lang-th">เข้าสู่ระบบ</span><span class="lang-en">Login</span><span class="lang-zh">登录</span>';
+      showFieldError('loginGeneralError',
+        '<span class="lang-th">ข้อผิดพลาดเครือข่าย กรุณาลองอีกครั้ง</span>' +
+        '<span class="lang-en">Network error, please try again</span>' +
+        '<span class="lang-zh">网络错误，请重试</span>');
+    }
+  }, 15000);
+
   try {
+    // 檢查 Supabase 是否初始化
+    if (typeof window.ThaiShop === 'undefined' || !window.ThaiShop.isSupabaseReady()) {
+      throw new Error('Supabase 尚未初始化，請檢查 config.js');
+    }
+
     var result = await login(email, password);
+    clearTimeout(loginBackupTimer);
 
     // Handle wrapped response format {success, data, error}
     var errorMsg = null;
@@ -147,6 +165,7 @@ async function handleLogin() {
     var redirect = getRedirectUrl();
     location.href = redirect;
   } catch (err) {
+    clearTimeout(loginBackupTimer);
     showFieldError('loginGeneralError', getAuthErrorMessage(err.message));
     if (btn) {
       btn.disabled = false;
@@ -249,7 +268,7 @@ async function handleRegister() {
     console.log('[ThaiShop Register] 開始註冊，email:', email);
 
     // 檢查 Supabase 是否初始化
-    if (typeof window.ThaiShop === 'undefined' || !window.supabase) {
+    if (typeof window.ThaiShop === 'undefined' || !window.ThaiShop.isSupabaseReady()) {
       throw new Error('Supabase 尚未初始化，請檢查 config.js');
     }
 
