@@ -813,7 +813,7 @@ async function register(email, password, name, phone) {
     // 建立使用者資料
     if (data.user) {
       console.log('[ThaiShop] 建立使用者 profile, userId:', data.user.id);
-      const { error: profileError } = await supabase
+      const { error: profileError } = await _sbClient
         .from('users')
         .insert({
           id: data.user.id,

@@ -357,6 +357,17 @@ function clearMessages() {
   });
 }
 
+function getLang() {
+  try {
+    var lang = localStorage.getItem('thaishop-lang') || 'zh';
+    // 統一語言代碼格式
+    if (lang === 'zh-TW') lang = 'zh';
+    return lang;
+  } catch(e) {
+    return 'zh';
+  }
+}
+
 function getAuthErrorMessage(msg) {
   var lang = getLang();
   var errorMap = {
