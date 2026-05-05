@@ -233,19 +233,50 @@ async function handleRegister() {
     btn.innerHTML = '<span class="lang-th">กำลังสมัครสมาชิก...</span><span class="lang-en">Registering...</span><span class="lang-zh">注册中...</span>';
   }
 
+  // 保險：20 秒後強制恢復按鈕（防止任何情況下卡死）
+  var backupTimer = setTimeout(function() {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span class="lang-th">สมัครสมาชิก</span><span class="lang-en">Register</span><span class="lang-zh">注册</span>';
+      showFieldError('registerGeneralError',
+        '<span class="lang-th">ข้อผิดพลาดเครือข่าย กรุณาลองอีกครั้ง</span>' +
+        '<span class="lang-en">Network error, please try again</span>' +
+        '<span class="lang-zh">网络错误，请重试</span>');
+    }
+  }, 20000);
+
   try {
-    var result = await register(email, password, name, phone);
+    console.log('[ThaiShop Register] 開始註冊，email:', email);
+
+    // 檢查 Supabase 是否初始化
+    if (typeof window.ThaiShop === 'undefined' || !window.supabase) {
+      throw new Error('Supabase 尚未初始化，請檢查 config.js');
+    }
+
+    // 加入超時保護，避免 Supabase 專案暫停時無限等待
+    var result = await Promise.race([
+      new Promise(function(resolve) {
+        register(email, password, name, phone).then(resolve).catch(resolve);
+      }),
+      new Promise(function(_, reject) {
+        setTimeout(function() { reject(new Error('timeout')); }, 15000);
+      })
+    ]);
+
+    clearTimeout(backupTimer);
+
+    console.log('[ThaiShop Register] 結果:', result);
 
     // Handle wrapped response format {success, data, error}
     var errorMsg = null;
     if (result && result.success === false && result.error) {
-      errorMsg = result.error;
+      errorMsg = typeof result.error === 'string' ? result.error : (result.error.message || result.error);
     } else if (result && result.error) {
       errorMsg = result.error.message || result.error;
     }
 
     if (errorMsg) {
-      showFieldError('registerGeneralError', getAuthErrorMessage(typeof errorMsg === 'string' ? errorMsg : errorMsg.message || 'Registration failed'));
+      showFieldError('registerGeneralError', getAuthErrorMessage(typeof errorMsg === 'string' ? errorMsg : (errorMsg.message || 'Registration failed')));
       if (btn) {
         btn.disabled = false;
         btn.innerHTML = '<span class="lang-th">สมัครสมาชิก</span><span class="lang-en">Register</span><span class="lang-zh">注册</span>';
@@ -264,7 +295,12 @@ async function handleRegister() {
     }, 1500);
 
   } catch (err) {
-    showFieldError('registerGeneralError', getAuthErrorMessage(err.message));
+    clearTimeout(backupTimer);
+    console.error('[ThaiShop Register] 錯誤:', err);
+    var displayMsg = (err && err.message === 'timeout') ?
+        getAuthErrorMessage('Network error') :
+        getAuthErrorMessage(err.message || 'Registration failed');
+    showFieldError('registerGeneralError', displayMsg);
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = '<span class="lang-th">สมัครสมาชิก</span><span class="lang-en">Register</span><span class="lang-zh">注册</span>';

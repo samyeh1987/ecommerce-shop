@@ -9,10 +9,15 @@
 const SUPABASE_URL = window.SUPABASE_CONFIG?.URL || '';
 const SUPABASE_ANON_KEY = window.SUPABASE_CONFIG?.ANON_KEY || '';
 
-let supabase = null;
+// 注意：CDN 的 @supabase/supabase-js 會在 window.supabase 掛載 createClient
+// 這裡用 _sbClient 避免與 window.supabase (CDN 全域物件) 名稱衝突
+let _sbClient = null;
 
 if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  _sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  console.log('[ThaiShop] Supabase Client 初始化成功');
+} else {
+  console.warn('[ThaiShop] Supabase Client 未初始化，請檢查 config.js 設定');
 }
 
 // ============================================================
@@ -150,7 +155,7 @@ function getLanguage() {
  * 檢查是否已初始化 Supabase
  */
 function isSupabaseReady() {
-  return supabase !== null;
+  return _sbClient !== null;
 }
 
 /**
@@ -160,7 +165,7 @@ async function getAuthUser() {
   if (!isSupabaseReady()) {
     return createResponse(false, null, getErrorMessage('server', currentLang));
   }
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await _sbClient.auth.getUser();
   return user;
 }
 
@@ -255,7 +260,7 @@ async function getProducts(options = {}) {
 
     // 特價商品（sale_price 存在且小於 price）
     if (options.sale) {
-      query = query.not('sale_price', 'is', null).lt('sale_price', supabase.rpc ? 999999 : 999999);
+      query = query.not('sale_price', 'is', null).lt('sale_price', _sbClient.rpc ? 999999 : 999999);
     }
 
     // 精選商品
@@ -646,7 +651,7 @@ async function createOrder(orderData, items) {
 
     if (itemsError) {
       // 如果建立訂單項目失敗，刪除已建立的訂單
-      await supabase.from('orders').delete().eq('id', order.id);
+      await _sbClient.from('orders').delete().eq('id', order.id);
       return createResponse(false, null, parseSupabaseError(itemsError, currentLang));
     }
 
@@ -760,8 +765,11 @@ async function getOrderById(orderId) {
  * @returns {object} 統一回應格式
  */
 async function register(email, password, name, phone) {
+  console.log('[ThaiShop] register() 開始, isSupabaseReady:', isSupabaseReady());
+
   if (!isSupabaseReady()) {
-    return createResponse(false, null, getErrorMessage('server', currentLang));
+    console.error('[ThaiShop] register() Supabase 未初始化');
+    return createResponse(false, null, 'Supabase 未初始化，請確認 config.js 設定正確');
   }
 
   if (!email || !password || !name) {
@@ -773,16 +781,27 @@ async function register(email, password, name, phone) {
   }
 
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: name,
-          phone: phone || ''
+    console.log('[ThaiShop] 呼叫 _sbClient.auth.signUp...');
+
+    // 為 signUp 添加超時保護
+    const signUpResult = await Promise.race([
+      _sbClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+            phone: phone || ''
+          }
         }
-      }
-    });
+      }),
+      new Promise(function(_, reject) {
+        setTimeout(function() { reject(new Error('Supabase API 連線逾時，專案可能已暫停')); }, 12000);
+      })
+    ]);
+
+    const { data, error } = signUpResult;
+    console.log('[ThaiShop] signUp 結果, error:', error, 'data:', data ? '有資料' : '無資料');
 
     if (error) {
       if (error.message.includes('already')) {
@@ -793,6 +812,7 @@ async function register(email, password, name, phone) {
 
     // 建立使用者資料
     if (data.user) {
+      console.log('[ThaiShop] 建立使用者 profile, userId:', data.user.id);
       const { error: profileError } = await supabase
         .from('users')
         .insert({
@@ -803,13 +823,15 @@ async function register(email, password, name, phone) {
         });
 
       if (profileError && !profileError.message.includes('duplicate')) {
-        console.error('Failed to create user profile:', profileError);
+        console.error('[ThaiShop] 建立使用者資料失敗:', profileError);
+        // 不阻擋註冊流程，Auth 已成功
       }
     }
 
     return createResponse(true, data);
   } catch (err) {
-    return createResponse(false, null, parseSupabaseError(err, currentLang));
+    console.error('[ThaiShop] register() 例外:', err);
+    return createResponse(false, null, err.message || 'Registration failed');
   }
 }
 
@@ -829,7 +851,7 @@ async function login(email, password) {
   }
 
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await _sbClient.auth.signInWithPassword({
       email,
       password
     });
@@ -857,7 +879,7 @@ async function logout() {
   }
 
   try {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await _sbClient.auth.signOut();
 
     if (error) {
       return createResponse(false, null, parseSupabaseError(error, currentLang));
@@ -879,7 +901,7 @@ async function getCurrentUser() {
   }
 
   try {
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error } = await _sbClient.auth.getUser();
 
     if (error) {
       return createResponse(false, null, parseSupabaseError(error, currentLang));
