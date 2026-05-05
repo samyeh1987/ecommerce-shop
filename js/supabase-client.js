@@ -924,7 +924,7 @@ async function getCurrentUser() {
     }
 
     // 取得使用者資料
-    const { data: profile } = await supabase
+    const { data: profile } = await _sbClient
       .from('users')
       .select('*')
       .eq('id', user.id)
